@@ -264,6 +264,3 @@ player = Player(20, 20, 5, "Idle", "Player", "A test player",
 goblin1 = Entity(5, 5, 10, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
-
-player.spawn(level1, 2, 3)
-print(player.move_valid(level1, "right", 100))
