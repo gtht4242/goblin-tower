@@ -4,14 +4,10 @@ You must ascend Goblin Tower and reach as high a level as possible.
 """
 #TO-DO:
 #Write Dungeon class to handle:
-#    - Physical list manipulation to move entities
 #    - Randomly generating map layouts and player and goblin spawns
 #                                                   (staggered/instant)
-#    - Printing front-end board
-#Write get_location method in Entity
 #
 #Write Player and Goblin subclasses, they will:
-#    - Inherit from Entity
 #    - Handle keyboard input (use ord(getch()) - cursor/direct no.)
 #    and call damage(), move(), item() (use 8 spaces between options)
 #    (getch works in terminal but not IDLE)
@@ -20,11 +16,7 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #                       Fighter - medium health, medium power
 #                       Rogue - low health, high power
 #    - Handle enemy AI (Goblin only)
-#    - Contain the raw move(), move_valid() and spawn()
-#
-#Add goblin death in damage()
-#    - Remove from map
-#    - Add exp. points
+#    - Contain move(), move_valid() and spawn()
 #
 #Write an Item class to handle:
 #    - Printing inventory (use list_generator.py for numbered list
@@ -33,6 +25,8 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #
 #Edit entity status based on actions(eg:walking, idle, in combat)
 #
+#Use variable to store no. of enemies left; decrease with kill and whem 0, activate stairs
+#
 #To improve player experience add:
 #    - Context messages
 #    - Sleep delays
@@ -40,8 +34,6 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #    - More ASCII art
 #    - "You are the nth adventurer to enter Goblin Tower" msg using
 #      a text file to store n
-#    - Use variable to store no. of enemies left; decrease with kill and whem 0,
-#   activate stairs
 
 from time import sleep
 from random import randint, shuffle, choice
@@ -67,7 +59,7 @@ class Entity(object):
         """Return True if alive, False if not"""
         return (not self.health <= 0)
     
-    def damage(self, enemy):
+    def damage(self, board, enemy):
         """Run damage sequence including exiting on player death"""
         enemy.health -= self.power
         if not enemy.isalive():
@@ -94,6 +86,15 @@ HALL OF FAME
 {}""".format(hall.read()))
             input("Press ENTER to quit")
             exit()
+        elif enemy.status == "Dead":
+            player.exp += 1
+            x = enemy.getx(board)
+            y = enemy.gety(board)
+            board.board[y][x] = 'O'
+            print("""
+You slayed {}!""".format(enemy.name))
+            if player.exp % 5 == 0:
+                player.level_up()
 
     def stats(self):
         """Return entity's stats"""
@@ -109,14 +110,6 @@ Description: {}""".format(self.name, self.role, self.health,
         return a
 
     def getx(self, board):
-        """Returns the x coordinate of the entity, else -1"""
-        for n in range(board.size):
-            for c in board.board[n]:
-                if c == self.sym:
-                    return n
-        return -1
-
-    def gety(self, board):
         """Returns the y coordinate of the entity, else -1"""
         for n in range(board.size):
             for i, c in enumerate(board.board[n]):
@@ -124,9 +117,17 @@ Description: {}""".format(self.name, self.role, self.health,
                     return i
         return -1
 
+    def gety(self, board):
+        """Returns the x coordinate of the entity, else -1"""
+        for n in range(board.size):
+            for c in board.board[n]:
+                if c == self.sym:
+                    return n
+        return -1
+
     def spawn(self, board, x, y):
         """Replaces the given coordinate in board with self.sym"""
-        board.board[x][y] = self.sym
+        board.board[y][x] = self.sym
 
     def move_valid(self, board, direction, n):
         """If move is valid return True. else return False"""
@@ -174,6 +175,7 @@ Description: {}""".format(self.name, self.role, self.health,
 class Player(Entity):
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym, level, floor):
+        self.exp = 0
         self.health = health
         self.max_health = max_health
         self.power = power
