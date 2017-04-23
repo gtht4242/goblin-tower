@@ -3,23 +3,15 @@
 You must ascend Goblin Tower and reach as high a level as possible.
 """
 #TO-DO:
-#Write Dungeon class to handle:
-#    - Randomly generating map layouts and player and goblin spawns
-#                                                   (staggered/instant)
-#
 #Write Player and Goblin subclasses, they will:
-#    - Handle keyboard input (use ord(getch()) - cursor/direct no.)
-#    and call damage(), move(), item() (use 8 spaces between options)
-#    (getch works in terminal but not IDLE)
-#    - Handle levelling up stats and giving items (Player only)
-#      Classes include: Paladin - high health, low power
-#                       Fighter - medium health, medium power
-#                       Rogue - low health, high power
+#    - Handle keyboard input (use ord(getch())) and call damage(), move(), item()
+#    - Player classes include: Paladin - high health, low power
+#                              Fighter - medium health, medium power
+#                              Rogue - low health, high power
 #    - Handle enemy AI (Goblin only)
-#    - Contain move(), move_valid() and spawn()
 #
 #Write an Item class to handle:
-#    - Printing inventory (use list_generator.py for numbered list
+#    - Printing inventory (use list_generator.py for numbered list)
 #    - Processing number input into calling item subclass method
 #Write subclasses for seperate item types (eg. grenade, potion)
 #
@@ -38,6 +30,7 @@ You must ascend Goblin Tower and reach as high a level as possible.
 
 from os import system
 from random import choice, randint, shuffle
+from sys import exit
 from time import sleep
 
 from vlc import MediaPlayer
@@ -66,6 +59,8 @@ class Entity(object):
     
     def damage(self, board, enemy):
         """Run damage sequence including exiting on player death and level up check on goblin death."""
+        self.status = "In combat"
+        enemy.status = "In combat"
         enemy.health -= self.power
         if not enemy.isalive():
             enemy.status = "Dead"
@@ -281,6 +276,8 @@ clear = system('cls')
 #Db
 player = Player(20, 20, 5, "Idle", "Player", "A test player",
                 "Fighter", 'P', 1, 1)
-goblin1 = Entity(5, 5, 10, "Idle", "Trixy", "A goblin minion",
+goblin1 = Entity(5, 5, 20, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
+
+goblin1.damage(level1, player)
