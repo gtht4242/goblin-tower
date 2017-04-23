@@ -34,6 +34,7 @@ from random import choice, randint, shuffle
 from sys import exit
 from time import sleep
 
+from profanity import profanity
 from vlc import MediaPlayer
 
 from msvcrt import getch
@@ -219,22 +220,23 @@ Description: {}""".format(self.name, self.level, self.role,
 
     def level_up(self):
         """Initiates level up sequence."""
+        self.level += 1
         print(self.stats())
         print("""
 LEVEL UP! - Add 1 point to health or power?
 
-1.Health        2.Power""")
-        self.level += 1
+1. Health
+2. Power""")
         while True:
-            a = ord(getch())
-            if a == 49:
+           key = ord(getch())
+           if key == 49:
                 self.health += 1
                 self.max_health += 1
                 break
-            elif a == 50:
+           elif key == 50:
                 self.power += 1
                 break
-            elif a == 3:
+           elif key == 3:
                 raise KeyboardInterrupt
         print(self.stats())
 
@@ -278,6 +280,21 @@ print(r"""
 Press ENTER to start""")
 input()
 clear = system('cls')
+name = profanity.censor(input("""Hello adventurer!
+
+What is your name?
+"""))
+clear = system('cls')
+print("""One dark and fateful night, ou find yourself lost in the deep forests of Yaagnok during a violent
+lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
+run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
+enter.
+
+What kind of adventurer are you?
+
+1. Paladin
+2. Fighter
+3. Rogue""")
 
 #Db
 player = Player(20, 20, 5, "Idle", "Player", "A test player",
@@ -285,3 +302,4 @@ player = Player(20, 20, 5, "Idle", "Player", "A test player",
 goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
+player.level_up()
