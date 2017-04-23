@@ -285,7 +285,7 @@ name = profanity.censor(input("""Hello adventurer!
 What is your name?
 """))
 clear = system('cls')
-print("""One dark and fateful night, ou find yourself lost in the deep forests of Yaagnok during a violent
+print("""One dark and fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
 lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
 run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
 enter.
@@ -295,11 +295,10 @@ What kind of adventurer are you?
 1. Paladin
 2. Fighter
 3. Rogue""")
-
+#Use ord(getch())
 #Db
 player = Player(20, 20, 5, "Idle", "Player", "A test player",
                 "Fighter", 'P', 1, 1)
 goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
-player.level_up()
