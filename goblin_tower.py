@@ -41,7 +41,7 @@ from msvcrt import getch
 from vlc import MediaPlayer
 
 class Entity(object):
-    """Instantiate an entity including isalive, damage and stats methods"""
+    """Base class for all entities in game."""
     invent = []
     
     def __init__(self, health, max_health, power, status, name,
@@ -56,11 +56,11 @@ class Entity(object):
         self.sym = sym
 
     def isalive(self):
-        """Return True if alive, False if not"""
+        """Return True if alive, False if not."""
         return (not self.health <= 0)
     
     def damage(self, board, enemy):
-        """Run damage sequence including exiting on player death"""
+        """Run damage sequence including exiting on player death and level up check on goblin death."""
         enemy.health -= self.power
         if not enemy.isalive():
             enemy.status = "Dead"
@@ -97,7 +97,7 @@ You slayed {}!""".format(enemy.name))
                 player.level_up()
 
     def stats(self):
-        """Return entity's stats"""
+        """Return formatted stats for the entity."""
         a = """
 Name: {}
 Class: {}
@@ -110,7 +110,7 @@ Description: {}""".format(self.name, self.role, self.health,
         return a
 
     def getx(self, board):
-        """Returns the y coordinate of the entity, else -1"""
+        """Return the x coordinate of the entity, else return -1 if not on board."""
         for n in range(board.size):
             for i, c in enumerate(board.board[n]):
                 if c == self.sym:
@@ -118,7 +118,7 @@ Description: {}""".format(self.name, self.role, self.health,
         return -1
 
     def gety(self, board):
-        """Returns the x coordinate of the entity, else -1"""
+        """Return the y coordinate of the entity, else return -1 if not on board."""
         for n in range(board.size):
             for c in board.board[n]:
                 if c == self.sym:
@@ -126,11 +126,11 @@ Description: {}""".format(self.name, self.role, self.health,
         return -1
 
     def spawn(self, board, x, y):
-        """Replaces the given coordinate in board with self.sym"""
+        """Replaces the given coordinate in board with self.sym."""
         board.board[y][x] = self.sym
 
     def move_valid(self, board, direction, n):
-        """If move is valid return True. else return False"""
+        """If move is valid return True. else return False."""
         x = self.getx(board)
         y = self.gety(board)
         if direction == 'left' or direction == 'up':
@@ -155,10 +155,7 @@ Description: {}""".format(self.name, self.role, self.health,
                 return True
 
     def move(self, board, direction, n):
-        """Moves self.sym on board in direction by n spaces"""
-        #Determine if out of bounds in input() via move_valid()
-        #IndexError off the right and bottom
-        #Negative index wrap around of the top and left
+        """Moves self.sym on board in direction by n spaces."""
         original_x = self.getx(board)
         original_y = self.gety(board)
         if direction == 'left':
@@ -173,6 +170,7 @@ Description: {}""".format(self.name, self.role, self.health,
 
 
 class Player(Entity):
+    """Subclass of Entity for player object"""
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym, level, floor):
         self.exp = 0
@@ -188,6 +186,7 @@ class Player(Entity):
         self.floor = floor
 
     def stats(self):
+        """Return formatted stats for player character."""
         a = """
 Name: {}
 Level: {}
@@ -203,7 +202,7 @@ Description: {}""".format(self.name, self.level, self.role,
         return a
 
     def level_up(self):
-        """Initiates level up dialog."""
+        """Initiates level up sequence."""
         print(self.stats())
         print("""
 LEVEL UP! - Add 1 point to health or power?
@@ -225,7 +224,7 @@ LEVEL UP! - Add 1 point to health or power?
 
 
 class Dungeon(object):
-    """Handles the list of lists 'board' on which gameplay takes place."""
+    """Base class to create, format and print list of lists 'board' on which gameplay takes place."""
     board = []
     
     def __init__(self, size):
