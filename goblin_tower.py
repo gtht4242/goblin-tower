@@ -127,6 +127,15 @@ Description: {}""".format(self.name, self.role, self.health,
         """Replaces the given coordinate in board with self.sym."""
         board.board[y][x] = self.sym
 
+    def rand_spawn(self, board):
+        """Replaces a random empty space in board with self.sym."""
+        while True:
+            x = randint(0, board.size - 1)
+            y = randint(0, board.size - 1)
+            if board.board[y][x] == 'O':
+                board.board[y][x] = self.sym
+                break
+
     def remove(self, board):
         """Replaces the entity in the board with 'O'."""
         x = self.getx(board)
@@ -269,9 +278,3 @@ player = Player(20, 20, 5, "Idle", "Player", "A test player",
 goblin1 = Entity(5, 5, 10, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
-
-player.spawn(level1, 2, 2)
-goblin1.spawn(level1, 2, 3)
-level1.print_board()
-player.damage(level1, goblin1)
-level1.print_board()
