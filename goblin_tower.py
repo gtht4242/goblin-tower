@@ -30,15 +30,20 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #To improve player experience add:
 #    - Context messages
 #    - Sleep delays
+#    - Screen clears
 #    - Music and sound effects (via vlc.MediaPlayer)
 #    - More ASCII art
 #    - "You are the nth adventurer to enter Goblin Tower" msg using
 #      a text file to store n
 
+from os import system
+from random import choice, randint, shuffle
 from time import sleep
-from random import randint, shuffle, choice
-from msvcrt import getch
+
 from vlc import MediaPlayer
+
+from msvcrt import getch
+
 
 class Entity(object):
     """Base class for all entities in game."""
@@ -271,6 +276,7 @@ print(r"""
 
 Press ENTER to start""")
 input()
+clear = system('cls')
 
 #Db
 player = Player(20, 20, 5, "Idle", "Player", "A test player",
