@@ -88,9 +88,7 @@ HALL OF FAME
             exit()
         elif enemy.status == "Dead":
             player.exp += 1
-            x = enemy.getx(board)
-            y = enemy.gety(board)
-            board.board[y][x] = 'O'
+            enemy.remove(board)
             print("""
 You slayed {}!""".format(enemy.name))
             if player.exp % 5 == 0:
@@ -271,3 +269,9 @@ player = Player(20, 20, 5, "Idle", "Player", "A test player",
 goblin1 = Entity(5, 5, 10, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
+
+player.spawn(level1, 2, 2)
+goblin1.spawn(level1, 2, 3)
+level1.print_board()
+player.damage(level1, goblin1)
+level1.print_board()
