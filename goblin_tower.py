@@ -4,16 +4,17 @@ You must ascend Goblin Tower and reach as high a level as possible.
 """
 #TO-DO:
 #Write Player and Goblin subclasses, they will:
-#    - Handle keyboard input (use ord(getch())) and call damage(), move(), item()
-#    - Player classes include: Paladin - high health, low power
-#                              Fighter - medium health, medium power
-#                              Rogue - low health, high power
+#    - Handle keyboard input (use ord(getch()) and call damage(), move(), item())
 #    - Handle enemy AI (Goblin only)
 #
 #Write an Item class to handle:
 #    - Printing inventory (use list_generator.py for numbered list)
 #    - Processing number input into calling item subclass method
 #Write subclasses for seperate item types (eg. grenade, potion)
+#
+#Player classes include: Paladin - high health, low power
+#                        Fighter - medium health, medium power
+#                        Rogue - low health, high power
 #
 #Edit entity status based on actions(eg:walking, idle, in combat)
 #
@@ -185,7 +186,7 @@ Description: {}""".format(self.name, self.role, self.health,
 
 
 class Player(Entity):
-    """Subclass of Entity for player object"""
+    """Subclass of Entity for player object including unique stats formatter and level up sequence."""
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym, level, floor):
         self.exp = 0
@@ -237,6 +238,9 @@ LEVEL UP! - Add 1 point to health or power?
                 raise KeyboardInterrupt
         print(self.stats())
 
+class Goblin(Entity):
+    """Subclass of Entity for goblin objects including AI move generators."""
+
 
 class Dungeon(object):
     """Base class to create, format and print list of lists 'board' on which gameplay takes place."""
@@ -278,6 +282,6 @@ clear = system('cls')
 #Db
 player = Player(20, 20, 5, "Idle", "Player", "A test player",
                 "Fighter", 'P', 1, 1)
-goblin1 = Entity(5, 5, 20, "Idle", "Trixy", "A goblin minion",
+goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
