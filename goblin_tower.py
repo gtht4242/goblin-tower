@@ -129,6 +129,12 @@ Description: {}""".format(self.name, self.role, self.health,
         """Replaces the given coordinate in board with self.sym."""
         board.board[y][x] = self.sym
 
+    def remove(self, board):
+        """Replaces the entity in the board with 'O'."""
+        x = self.getx(board)
+        y = self.gety(board)
+        board.board[y][x] = 'O'
+
     def move_valid(self, board, direction, n):
         """If move is valid return True. else return False."""
         x = self.getx(board)
