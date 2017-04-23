@@ -59,8 +59,8 @@ class Entity(object):
     
     def damage(self, board, enemy):
         """Run damage sequence including exiting on player death and level up check on goblin death."""
-        self.status = "In combat"
-        enemy.status = "In combat"
+        self.status = "Attacking"
+        enemy.status = "Attacking"
         enemy.health -= self.power
         if not enemy.isalive():
             enemy.status = "Dead"
@@ -93,6 +93,8 @@ HALL OF FAME
 You slayed {}!""".format(enemy.name))
             if player.exp % 5 == 0:
                 player.level_up()
+        player.status = "Idle"
+        enemy.status = "Idle"
 
     def stats(self):
         """Return formatted stats for the entity."""
@@ -279,5 +281,3 @@ player = Player(20, 20, 5, "Idle", "Player", "A test player",
 goblin1 = Entity(5, 5, 20, "Idle", "Trixy", "A goblin minion",
                  "Minion", 'T')
 level1 = Dungeon(5)
-
-goblin1.damage(level1, player)
