@@ -4,6 +4,6 @@ A fantasy dungeon-crawling adventure game developed for Windows installations of
 ## Requirements
 - VLC media player http://www.videolan.org/vlc/index.html
 - VLC Python lib https://pypi.python.org/pypi/python-vlc/
-- Windows installation of Python 3x (as msvcrt is used to detect keyboard input)
+- Windows installation of Python 3x (as msvcrt is used to detect keyboard input and 'cls' command is used to clear terminal window)
 
 Currently in development as a personal learning project, projected finish **2017/18**.
