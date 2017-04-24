@@ -16,7 +16,7 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #                        Fighter - medium health, medium power
 #                        Rogue - low health, high power
 #
-#Edit entity status based on actions(eg:walking, idle, in combat)
+#Edit entity status based on actions(eg:walking, Ready, in combat)
 #
 #Use variable to store no. of enemies left; decrease with kill and whem 0, activate stairs
 #
@@ -95,8 +95,8 @@ HALL OF FAME
 You slayed {}!""".format(enemy.name))
             if player.exp % 5 == 0:
                 player.level_up()
-        player.status = "Idle"
-        enemy.status = "Idle"
+        player.status = "Ready"
+        enemy.status = "Ready"
 
     def stats(self):
         """Return formatted stats for the entity."""
@@ -260,15 +260,9 @@ class Dungeon(object):
 
 
 #Db
-player = Player(20, 20, 5, "Idle", "Player", "A test player",
-                "Fighter", 'P', 1, 1)
-goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
-                 "Minion", 'T')
+player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", 'P', 1, 1)
+goblin1 = Goblin(5, 5, 20, "Ready", "Trixy", "A goblin minion", "Minion", 'T')
 level1 = Dungeon(5)
-player.spawn(level1, 4, 4)
-print(player.getx(level1), player.gety(level1))
-level1.print_board()
-print(player.move_valid(level1, 'right', 0))
 print(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
@@ -305,4 +299,27 @@ What kind of adventurer are you?
 1. Paladin (high health, low power)
 2. Fighter (medium health, medium power)
 3. Rogue (low health, high power)""")
-#Use ord(getch())
+while True:
+    key = ord(getch())
+    if key == 49:
+        player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
+                        "Paladin", "P", 1, 1)
+        break
+    elif key == 50:
+        player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
+                        "Fighter", "P", 1, 1)
+        break
+    elif key == 51:
+        player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
+                        "Rogue", "P", 1, 1)
+        break
+    elif key == 3:
+        raise KeyboardInterrupt
+clear = system('cls')
+print("""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
+magical force. A shrill cackle fills the air as you scan your surroundings. As the first golbins step out
+of the dark, you ready your weapon, unaware of the dangers that lie ahead.
+{}
+
+Press ENTER to start climbing Goblin Tower""".format(player.stats()))
+input()
