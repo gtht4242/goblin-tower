@@ -151,21 +151,21 @@ Description: {}""".format(self.name, self.role, self.health,
         x = self.getx(board)
         y = self.gety(board)
         if direction == 'left' or direction == 'up':
-            if direction == 'left':
+            if direction == 'up':
                 y -= n
-            elif direction == 'up':
+            elif direction == 'left':
                 x -= n
-            if x or y < 0:
+            if x < 0 or y < 0:
                 return False
             else:
                 return True
         else:
-            if direction == 'right':
+            if direction == 'down':
                 y += n
-            elif direction == 'down':
+            elif direction == 'right':
                 x += n
             try:
-                board.board[x][y]
+                board.board[y][x]
             except IndexError:
                 return False
             else:
@@ -259,6 +259,16 @@ class Dungeon(object):
             print(' '.join(row))
 
 
+#Db
+player = Player(20, 20, 5, "Idle", "Player", "A test player",
+                "Fighter", 'P', 1, 1)
+goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
+                 "Minion", 'T')
+level1 = Dungeon(5)
+player.spawn(level1, 4, 4)
+print(player.getx(level1), player.gety(level1))
+level1.print_board()
+print(player.move_valid(level1, 'right', 0))
 print(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
@@ -296,9 +306,3 @@ What kind of adventurer are you?
 2. Fighter (medium health, medium power)
 3. Rogue (low health, high power)""")
 #Use ord(getch())
-#Db
-player = Player(20, 20, 5, "Idle", "Player", "A test player",
-                "Fighter", 'P', 1, 1)
-goblin1 = Goblin(5, 5, 20, "Idle", "Trixy", "A goblin minion",
-                 "Minion", 'T')
-level1 = Dungeon(5)
