@@ -260,7 +260,48 @@ class Dungeon(object):
 #Db
 player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", 'P', 1, 1)
 goblin1 = Goblin(5, 5, 20, "Ready", "Trixy", "A goblin minion", "Minion", 'T')
-level1 = Dungeon(5)
+board = Dungeon(10)
+
+names = ['Antonio', 'Elliot', 'Amina', 'Un', 'Ezra', 'Erin', 'Willetta', 'Anisa', 'Zackary', 'Dede', 'Joye',
+'Eric', 'Marybelle', 'Cleveland', 'Hank', 'Ashanti', 'Saturnina', 'Gidget', 'Felicidad', 'Annalee', 'Palmira',
+'Franklin', 'Cristobal', 'Leif', 'Johnny', 'Merrill', 'Deon', 'Freddy', 'Julene', 'Maryln', 'Kattie', 'Chase',
+'Barrett', 'Luanna', 'Cameron', 'Monserrate', 'Chauncey', 'Marcelo', 'Jerry', 'Kiana', 'Denver', 'Eusebio',
+'Boris', 'Earl', 'Gretta', 'Ricky', 'Ed', 'Vannesa', 'Gilbert', 'Jae', 'Lyle', 'Jesse', 'Agueda', 'Jolie',
+'Zachery', 'Korey', 'Kyle', 'Javier', 'Anya', 'Farah', 'Norbert', 'Jolyn', 'Cassi', 'Paul', 'Gerard', 'Frida',
+'Raeann', 'Burton', 'Otha', 'Elroy', 'Freddie', 'Lucius', 'Gary', 'Jc', 'Tona', 'Noah', 'Dannette',
+'Nathaniel', 'Rolf', 'Jen', 'Minta', 'Linsey', 'Chan', 'Lovella', 'Dann', 'Amberly', 'Pedro', 'Annalisa',
+'Belia', 'Stefan', 'Dante', 'Jaye', 'Cyndy', 'Enola', 'Ehtel', 'Jim', 'Larae', 'Theo', 'Raphael', 'Barbera',
+'Kraig', 'Forest', 'Elliott', 'Stacey', 'Kiesha', 'Latrisha', 'Jamar', 'Isidro', 'Temika', 'Joshua', 'Man',
+'Tyrell', 'Brandon', 'Chi', 'Rodney', 'Cristopher', 'Keven', 'Ellamae', 'Crystle', 'Librada', 'Faustina',
+'Gearldine', 'Merlin', 'Oswaldo', 'Ashli', 'Florinda', 'Susann', 'Pamella', 'Bettyann', 'Lynna', 'Loree',
+'Winford', 'Marvis', 'Faustino', 'Isiah', 'Salena', 'Edmond', 'Trevor', 'Corrin', 'Leigh', 'Britni',
+'Shaniqua', 'Corrinne', 'Brice', 'Lamar', 'Diego', 'Domonique', 'Domingo', 'Cecille', 'Romeo', 'Shannon',
+'Maryalice', 'Eustolia', 'Magdalen', 'Bernetta', 'Alfonso', 'Charley', 'Dane', 'Eli', 'Charlott', 'Vincenzo',
+'Dierdre', 'Isaac', 'Katerine', 'Jordan', 'Chae', 'Warner', 'Esteban', 'Codi', 'Carl', 'Lanora', 'Kristle',
+'Andrew', 'Latoyia', 'Annice', 'Lucio', 'Santiago', 'Fletcher', 'Karisa', 'Alex', 'Lucas', 'Derrick', 'Erik',
+'Patience', 'Ardelia', 'Silas', 'Caroll', 'Ernest', 'Rickey', 'Reinaldo', 'Jarred', 'Evita', 'Britta',
+'Royce', 'Denis', 'Tobie', 'Raisa']
+title = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoying", "Arrogant", "Articulate",
+"Athletic", "Awkward", "Boastful", "Bold", "Bossy", "Brave", "Bright", "Busy", "Calm", "Careful", "Careless",
+"Caring", "Cautious", "Cheerful", "Clever", "Clumsy", "Compassionate", "Complex", "Conceited", "Confident",
+"Considerate", "Cooperative", "Courageous", "Creative", "Curious", "Dainty", "Daring", "Dark", "Defiant",
+"Demanding", "Determined", "Devout", "Disagreeable", "Disgruntled", "Dreamer", "Eager", "Efficient",
+"Embarrassed", "Energetic", "Excited", "Expert", "Fair", "Faithful", "Fancy", "Fighter", "Forgiving",
+"Free", "Friendly", "Friendly", "Frustrated", "Fun-loving", "Funny", "Generous", "Gentle", "Giving",
+"Gorgeous", "Gracious", "Grouchy", "Handsome", "Happy", "Hard-working", "Helpful", "Honest", "Hopeful",
+"Humble", "Humorous", "Imaginative", "Impulsive", "Independent", "Intelligent", "Inventive", "Jealous",
+"Joyful", "Judgmental", "Keen", "Kind", "Knowledgeable", "Lazy", "Leader", "Light", "Light-hearted",
+"Likeable", "Lively", "Lovable", "Loving", "Loyal", "Manipulative", "Materialistic", "Mature", "Melancholy",
+"Merry", "Messy", "Mischievous", "Naïve", "Neat", "Nervous", "Noisy", "Obnoxious", "Opinionated", "Organized",
+"Outgoing", "Passive", "Patient", "Patriotic", "Perfectionist", "Personable", "Pitiful", "Plain", "Pleasant",
+"Pleasing", "Poor", "Popular", "Pretty", "Prim", "Proper", "Proud", "Questioning", "Quiet", "Radical",
+"Realistic", "Rebellious", "Reflective", "Relaxed", "Reliable", "Religious", "Reserved", "Respectful",
+"Responsible", "Reverent", "Rich", "Rigid", "Rude", "Sad", "Sarcastic", "Self-confident", "Self-conscious",
+"Selfish", "Sensible", "Sensitive", "Serious", "Short", "Shy", "Silly", "Simple", "Simple-minded", "Smart",
+"Stable", "Strong", "Stubborn", "Studious", "Successful", "Tall", "Tantalizing", "Tender", "Tense",
+"Thoughtful", "Thrilling", "Timid", "Tireless", "Tolerant", "Tough", "Tricky", "Trusting", "Ugly",
+"Understanding", "Unhappy", "Unique", "Unlucky", "Unselfish", "Vain", "Warm", "Wild", "Willing",
+"Wise", "Witty"]
 print(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
@@ -315,9 +356,10 @@ while True:
         raise KeyboardInterrupt
 clear = system('cls')
 print("""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
-magical force. A shrill cackle fills the air as you scan your surroundings. As the first golbins step out
-of the dark, you ready your weapon, unaware of the dangers that lie ahead.
+magical force. A shrill cackle fills the air as you scan your surroundings. As the first goblins step out
+of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 {}
 
 Press ENTER to start climbing Goblin Tower""".format(player.stats()))
 input()
+clear = system('cls')
