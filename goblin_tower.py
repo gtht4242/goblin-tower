@@ -155,7 +155,7 @@ Description: {}""".format(self.name, self.role, self.health,
                 y -= n
             elif direction == 'left':
                 x -= n
-            if x < 0 or y < 0:
+            if x < 0 or y < 0 or board.board[y][x] != 'O':
                 return False
             else:
                 return True
@@ -164,9 +164,7 @@ Description: {}""".format(self.name, self.role, self.health,
                 y += n
             elif direction == 'right':
                 x += n
-            try:
-                board.board[y][x]
-            except IndexError:
+            if x >= board.size or y >= board.size or board.board[y][x] != 'O':
                 return False
             else:
                 return True
