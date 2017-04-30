@@ -89,6 +89,7 @@ HALL OF FAME
             exit()
         elif enemy.status == "Dead":
             player.exp += 1
+            goblin_count -= 1
             enemy.remove(board)
             print("""
 You slayed {}!""".format(enemy.name))
@@ -383,4 +384,6 @@ while True:
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
-    break
+    goblin_count = 3
+    while goblin_count > 0:
+        break
