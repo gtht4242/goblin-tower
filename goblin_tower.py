@@ -5,20 +5,13 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #TO-DO:
 #Write Player and Goblin subclasses, they will:
 #    - Handle keyboard input (use ord(getch()) and call damage(), move(), item())
+#      (or maybe just do this in the player turn loop)
 #    - Handle enemy AI (Goblin only)
 #
 #Write an Item class to handle:
 #    - Printing inventory (use list_generator.py for numbered list)
 #    - Processing number input into calling item subclass method
 #Write subclasses for seperate item types (eg. grenade, potion)
-#
-#Player classes include: Paladin - high health, low power
-#                        Fighter - medium health, medium power
-#                        Rogue - low health, high power
-#
-#Edit entity status based on actions(eg:walking, Ready, in combat)
-#
-#Use variable to store no. of enemies left; decrease with kill and whem 0, activate stairs
 #
 #To improve player experience add:
 #    - Context messages
@@ -386,4 +379,4 @@ while True:
     goblin3.rand_spawn(board)
     goblin_count = 3
     while goblin_count > 0:
-        break
+        #Write player and goblin turn loop here
