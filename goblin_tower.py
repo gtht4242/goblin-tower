@@ -380,3 +380,4 @@ while True:
     goblin_count = 3
     while goblin_count > 0:
         #Write player and goblin turn loop here
+        exit()
