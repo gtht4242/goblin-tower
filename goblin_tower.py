@@ -30,7 +30,7 @@ You must ascend Goblin Tower and reach as high a level as possible.
 #      a text file to store n
 
 from os import system
-from random import choice, randint, shuffle
+from random import choice, randint
 from sys import exit
 from time import sleep
 
@@ -42,8 +42,7 @@ from msvcrt import getch
 
 class Entity(object):
     """Base class for all entities in game."""
-    invent = []
-    
+
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym):
         self.health = health
@@ -244,10 +243,10 @@ class Goblin(Entity):
 
 class Dungeon(object):
     """Base class to create, format and print list of lists 'board' on which gameplay takes place."""
-    board = []
-    
+
     def __init__(self, size):
         self.size = size     
+        self.board = []
         for n in range(self.size):
             self.board.append(['O'] * self.size)
 
@@ -281,7 +280,7 @@ names = ['Antonio', 'Elliot', 'Amina', 'Un', 'Ezra', 'Erin', 'Willetta', 'Anisa'
 'Andrew', 'Latoyia', 'Annice', 'Lucio', 'Santiago', 'Fletcher', 'Karisa', 'Alex', 'Lucas', 'Derrick', 'Erik',
 'Patience', 'Ardelia', 'Silas', 'Caroll', 'Ernest', 'Rickey', 'Reinaldo', 'Jarred', 'Evita', 'Britta',
 'Royce', 'Denis', 'Tobie', 'Raisa']
-title = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoying", "Arrogant", "Articulate",
+titles = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoying", "Arrogant", "Articulate",
 "Athletic", "Awkward", "Boastful", "Bold", "Bossy", "Brave", "Bright", "Busy", "Calm", "Careful", "Careless",
 "Caring", "Cautious", "Cheerful", "Clever", "Clumsy", "Compassionate", "Complex", "Conceited", "Confident",
 "Considerate", "Cooperative", "Courageous", "Creative", "Curious", "Dainty", "Daring", "Dark", "Defiant",
@@ -346,11 +345,11 @@ while True:
         break
     elif key == 50:
         player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", "P", 1, 1)
+                        "Fighter", "F", 1, 1)
         break
     elif key == 51:
         player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", "P", 1, 1)
+                        "Rogue", "R", 1, 1)
         break
     elif key == 3:
         raise KeyboardInterrupt
@@ -363,3 +362,25 @@ of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 Press ENTER to start climbing Goblin Tower""".format(player.stats()))
 input()
 clear = system('cls')
+while True:
+    board = Dungeon(10)
+    low_health = randint(1, 5)
+    med_health = randint(3, 7)
+    high_health = randint(5, 9)
+    low_power = randint(1, 2)
+    med_power = randint(3, 4)
+    high_power = randint(5, 6)
+    name1 = choice(names) + ' the ' + choice(titles)
+    name2 = choice(names) + ' the ' + choice(titles)
+    name3 = choice(names) + ' the ' + choice(titles)
+    goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
+                     "A fast and silent killer armed with a dagger", "Assassin", "A")
+    goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
+                     "A skilled swordsman loyal to the Goblin King", "Knight", "K")
+    goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
+                     "A heavily armoured sentinel skilled with a mace", "Champion", "C")
+    player.rand_spawn(board)
+    goblin1.rand_spawn(board)
+    goblin2.rand_spawn(board)
+    goblin3.rand_spawn(board)
+    break
