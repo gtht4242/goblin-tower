@@ -1,6 +1,6 @@
 """Endless turn-based, grid-based, fantasy-themed, strategy game
 
-You must ascend Goblin Tower and reach as high a level as possible.
+You must ascend Goblin Tower and reach as high a floor as possible.
 """
 #TO-DO:
 #Write Player and Goblin subclasses, they will:
@@ -34,7 +34,7 @@ from msvcrt import getch
 
 
 class Entity(object):
-    """Base class for all entities in game."""
+    """Base class for all entities in the game."""
 
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym):
@@ -47,16 +47,16 @@ class Entity(object):
         self.role = role
         self.sym = sym
 
-    def isalive(self):
+    def is_alive(self):
         """Return True if alive, False if not."""
         return (not self.health <= 0)
     
     def damage(self, board, enemy):
-        """Run damage sequence including exiting on player death and level up check on goblin death."""
+        """Run damage sequence including exiting on player death and updating values on goblin death."""
         self.status = "Attacking"
         enemy.status = "Attacking"
         enemy.health -= self.power
-        if not enemy.isalive():
+        if not enemy.is_alive():
             enemy.status = "Dead"
         a = self.stats()
         b = enemy.stats()
@@ -70,11 +70,9 @@ class Entity(object):
             print("""
 You died! - GAME OVER""")
             sleep(3)
-            with open("text_sources/hall_of_fame.txt",
-                      "a") as hall:
+            with open("text_sources/hall_of_fame.txt", "a") as hall:
                 hall.write(player.stats() + '\n')
-            with open("text_sources/hall_of_fame.txt",
-                      "r") as hall:
+            with open("text_sources/hall_of_fame.txt", "r") as hall:
                 print("""
 HALL OF FAME
 {}""".format(hall.read()))
@@ -121,11 +119,11 @@ Description: {}""".format(self.name, self.role, self.health,
         return -1
 
     def spawn(self, board, x, y):
-        """Replaces the given coordinate in board with self.sym."""
+        """Replaces the given coordinate in board with the entity's symbol."""
         board.board[y][x] = self.sym
 
     def rand_spawn(self, board):
-        """Replaces a random empty space in board with self.sym."""
+        """Replaces a random empty space in board with the entity's symbol."""
         while True:
             x = randint(0, board.size - 1)
             y = randint(0, board.size - 1)
@@ -163,25 +161,24 @@ Description: {}""".format(self.name, self.role, self.health,
                 return True
 
     def move(self, board, direction, n):
-        """Moves self.sym on board in direction by n spaces."""
+        """Moves entity on board in given direction by n spaces."""
         original_x = self.getx(board)
         original_y = self.gety(board)
-        if direction == 'left':
-            board.board[original_x][original_y - n] = self.sym
-        elif direction == 'right':
-            board.board[original_x][original_y + n] = self.sym
-        elif direction == 'up':
-            board.board[original_x - n][original_y] = self.sym
+        if direction == 'up':
+            board.board[original_y - n][original_x] = self.sym
         elif direction == 'down':
-            board.board[original_x + n][original_y] = self.sym
-        board.board[original_x][original_y] = 'O'
+            board.board[original_y + n][original_x] = self.sym
+        elif direction == 'left':
+            board.board[original_y][original_x - n] = self.sym
+        elif direction == 'right':
+            board.board[original_y][original_x + n] = self.sym
+        board.board[original_y][original_x] = 'O'
 
 
 class Player(Entity):
     """Subclass of Entity for player object including unique stats formatter and level up sequence."""
     def __init__(self, health, max_health, power, status, name,
                  descript, role, sym, level, floor):
-        self.exp = 0
         self.health = health
         self.max_health = max_health
         self.power = power
@@ -192,6 +189,7 @@ class Player(Entity):
         self.sym = sym
         self.level = level
         self.floor = floor
+        self.exp = 0
 
     def stats(self):
         """Return formatted stats for player character."""
@@ -245,7 +243,7 @@ class Dungeon(object):
             self.board.append(['O'] * self.size)
 
     def print_board(self):
-        """Print board in clean, front-end grid form"""
+        """Print board in formatted, front-end grid form."""
         for row in self.board:
             print(' '.join(row))
 
