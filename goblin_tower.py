@@ -130,7 +130,7 @@ Description: {}""".format(self.name, self.role, self.health,
         while True:
             x = randint(0, board.size - 1)
             y = randint(0, board.size - 1)
-            if board.board[y][x] == 'O':
+            if board.board[y][x] == colored('O', 'grey', 'on_white'):
                 board.board[y][x] = self.sym
                 break
 
@@ -138,7 +138,7 @@ Description: {}""".format(self.name, self.role, self.health,
         """Replaces the entity in the board with 'O'."""
         x = self.getx(board)
         y = self.gety(board)
-        board.board[y][x] = 'O'
+        board.board[y][x] = colored('O', 'grey', 'on_white')
 
     def move_valid(self, board, direction, n):
         """If move is valid return True. else return False."""
@@ -149,7 +149,7 @@ Description: {}""".format(self.name, self.role, self.health,
                 y -= n
             elif direction == 'left':
                 x -= n
-            if x < 0 or y < 0 or board.board[y][x] != 'O':
+            if x < 0 or y < 0 or board.board[y][x] != colored('O', 'grey', 'on_white'):
                 return False
             else:
                 return True
@@ -158,7 +158,7 @@ Description: {}""".format(self.name, self.role, self.health,
                 y += n
             elif direction == 'right':
                 x += n
-            if x >= board.size or y >= board.size or board.board[y][x] != 'O':
+            if x >= board.size or y >= board.size or board.board[y][x] != colored('O', 'grey', 'on_white'):
                 return False
             else:
                 return True
@@ -175,7 +175,7 @@ Description: {}""".format(self.name, self.role, self.health,
             board.board[original_y][original_x - n] = self.sym
         elif direction == 'right':
             board.board[original_y][original_x + n] = self.sym
-        board.board[original_y][original_x] = 'O'
+        board.board[original_y][original_x] = colored('O', 'grey', 'on_white')
 
 
 class Player(Entity):
@@ -243,26 +243,26 @@ class Dungeon(object):
         self.size = size     
         self.board = []
         for n in range(self.size):
-            self.board.append(['O'] * self.size)
+            self.board.append([colored('O', 'grey', 'on_white')] * self.size)
 
     def print_board(self):
         """Print board in formatted, front-end grid form."""
         for row in self.board:
-            cprint(' '.join(row))
+            cprint(colored(' ', 'grey', 'on_white').join(row))
 
     def return_board(self):
         """Return board in formatted, front-end grid form."""
         new_board = ''
         for i, row in enumerate(self.board):
-            new_board += ' '.join(row)
+            new_board += colored(' ', 'grey', 'on_white').join(row)
             if i < self.size - 1:
                 new_board += '\n'
         return new_board
 
 
 #Db
-player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", 'P', 1, 1)
-goblin1 = Goblin(5, 5, 20, "Ready", "Trixy", "A goblin minion", "Minion", 'T')
+player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", colored('P', 'cyan', 'on_white'), 1, 1)
+goblin1 = Goblin(5, 5, 20, "Ready", "Trixy", "A goblin minion", "Minion", colored('G', 'red', 'on_white'))
 board = Dungeon(10)
 
 names = ['Antonio', 'Elliot', 'Amina', 'Un', 'Ezra', 'Erin', 'Willetta', 'Anisa', 'Zackary', 'Dede', 'Joye',
@@ -345,15 +345,15 @@ while True:
     key = ord(getch())
     if key == 49:
         player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                        "Paladin", colored("P", 'cyan'), 1, 1)
+                        "Paladin", colored("P", 'cyan', 'on_white'), 1, 1)
         break
     elif key == 50:
         player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", colored("F", 'cyan'), 1, 1)
+                        "Fighter", colored("F", 'cyan', 'on_white'), 1, 1)
         break
     elif key == 51:
         player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", colored("R", 'cyan'), 1, 1)
+                        "Rogue", colored("R", 'cyan', 'on_white'), 1, 1)
         break
     elif key == 3:
         raise KeyboardInterrupt
@@ -378,11 +378,11 @@ while True:
     name2 = choice(names) + ' the ' + choice(titles)
     name3 = choice(names) + ' the ' + choice(titles)
     goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
-                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', 'red'))
+                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', 'red', 'on_white'))
     goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
-                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red'))
+                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
-                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red'))
+                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
