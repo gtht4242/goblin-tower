@@ -39,8 +39,7 @@ colorama.init()
 class Entity(object):
     """Base class for all entities in the game."""
 
-    def __init__(self, health, max_health, power, status, name,
-                 descript, role, sym):
+    def __init__(self, health, max_health, power, status, name, descript, role, sym):
         self.health = health
         self.max_health = max_health
         self.power = power
@@ -180,8 +179,7 @@ Description: {}""".format(self.name, self.role, self.health,
 
 class Player(Entity):
     """Subclass of Entity for player object including unique stats formatter and level up sequence."""
-    def __init__(self, health, max_health, power, status, name,
-                 descript, role, sym, level, floor):
+    def __init__(self, health, max_health, power, status, name, descript, role, sym, level, floor):
         self.health = health
         self.max_health = max_health
         self.power = power
@@ -391,22 +389,64 @@ while True:
     turn = 1
     while goblin_count > 0:
         #Write player and goblin turn loop here
-        cprint("""ROUND {}
+        round_screen = """ROUND {}
 
 PLAYER TURN
 
-{}
-
+{}""".format(turn, board.return_board())
+        cprint(round_screen)
+        cprint("""
 1. Move
-2. Attack""".format(turn, board.return_board()))
+2. Attack""")
         while True:
             key = ord(getch())
             if key == 49:
-                #Use move function
+                while True:
+                    clear = system('cls')
+                    cprint(round_screen)
+                    cprint("""
+What direction?
+
+1. Up
+2. Down
+3. Left
+4. Right""")
+                    while True:
+                        key = ord(getch())
+                        if key == 49:
+                            direction = 'up'
+                            break
+                        elif key == 50:
+                            direction = 'down'
+                            break
+                        elif key == 51:
+                            direction = 'left'
+                            break
+                        elif key == 52:
+                            direction = 'right'
+                            break
+                        elif key == 3:
+                            raise KeyboardInterrupt
+                    if player.move_valid(board, direction, 1):
+                        player.move(board, direction, 1)
+                        break
+                    else:
+                        print("""
+That move is not valid!""")
+                        sleep(3)
                 break
             elif key == 50:
                 #Use damage function
                 break
             elif key == 3:
                 raise KeyboardInterrupt
-exit()
+        round_screen = """ROUND {}
+
+PLAYER TURN
+
+{}""".format(turn, board.return_board())
+        clear = system('cls')
+        print(round_screen)
+        #Goblin turn starts here
+        turn += 1
+        exit()
