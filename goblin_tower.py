@@ -247,6 +247,15 @@ class Dungeon(object):
         for row in self.board:
             print(' '.join(row))
 
+    def return_board(self):
+        """Return board in formatted, front-end grid form."""
+        new_board = ''
+        for i, row in enumerate(self.board):
+            new_board += ' '.join(row)
+            if i < self.size - 1:
+                new_board += '\n'
+        return new_board
+
 
 #Db
 player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", 'P', 1, 1)
@@ -376,6 +385,7 @@ while True:
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
     goblin_count = 3
+    turn = 1
     while goblin_count > 0:
         #Write player and goblin turn loop here
         exit()
