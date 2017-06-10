@@ -345,15 +345,15 @@ while True:
     key = ord(getch())
     if key == 49:
         player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                        "Paladin", "P", 1, 1)
+                        "Paladin", colored("P", 'cyan'), 1, 1)
         break
     elif key == 50:
         player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", "F", 1, 1)
+                        "Fighter", colored("F", 'cyan'), 1, 1)
         break
     elif key == 51:
         player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", "R", 1, 1)
+                        "Rogue", colored("R", 'cyan'), 1, 1)
         break
     elif key == 3:
         raise KeyboardInterrupt
@@ -378,11 +378,11 @@ while True:
     name2 = choice(names) + ' the ' + choice(titles)
     name3 = choice(names) + ' the ' + choice(titles)
     goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
-                     "A fast and silent killer armed with a dagger", "Assassin", "A")
+                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', 'red'))
     goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
-                     "A skilled swordsman loyal to the Goblin King", "Knight", "K")
+                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
-                     "A heavily armoured sentinel equipped with a mace", "Champion", "C")
+                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red'))
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
