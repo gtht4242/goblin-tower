@@ -370,7 +370,7 @@ while True:
     goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
                      "A skilled swordsman loyal to the Goblin King", "Knight", "K")
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
-                     "A heavily armoured sentinel skilled with a mace", "Champion", "C")
+                     "A heavily armoured sentinel equipped with a mace", "Champion", "C")
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
