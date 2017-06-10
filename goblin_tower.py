@@ -388,4 +388,22 @@ while True:
     turn = 1
     while goblin_count > 0:
         #Write player and goblin turn loop here
-        exit()
+        print("""ROUND {}
+
+PLAYER TURN
+
+{}
+
+1. Move
+2. Attack""".format(turn, board.return_board()))
+        while True:
+            key = ord(getch())
+            if key == 49:
+                #Use move function
+                break
+            elif key == 50:
+                #Use damage function
+                break
+            elif key == 3:
+                raise KeyboardInterrupt
+exit()
