@@ -63,20 +63,20 @@ class Entity(object):
             enemy.status = "Dead"
         a = self.stats()
         b = enemy.stats()
-        print("""
+        cprint("""
 {} attacks {} for {} damage!""".format(self.name, enemy.name,
                                        self.power))
         sleep(2)
-        print(a, '\n', b)
+        cprint(a, '\n', b)
         if player.status == "Dead":
             player.health = 0
-            print("""
+            cprint("""
 You died! - GAME OVER""")
             sleep(3)
             with open("text_sources/hall_of_fame.txt", "a") as hall:
                 hall.write(player.stats() + '\n')
             with open("text_sources/hall_of_fame.txt", "r") as hall:
-                print("""
+                cprint("""
 HALL OF FAME
 {}""".format(hall.read()))
             input("Press ENTER to quit")
@@ -85,7 +85,7 @@ HALL OF FAME
             player.exp += 1
             goblin_count -= 1
             enemy.remove(board)
-            print("""
+            cprint("""
 You slayed {}!""".format(enemy.name))
             if player.exp % 5 == 0:
                 player.level_up()
@@ -213,8 +213,8 @@ Description: {}""".format(self.name, self.level, self.role,
     def level_up(self):
         """Initiates level up sequence."""
         self.level += 1
-        print(self.stats())
-        print("""
+        cprint(self.stats())
+        cprint("""
 LEVEL UP! - Add 1 point to health or power?
 
 1. Health
@@ -230,7 +230,7 @@ LEVEL UP! - Add 1 point to health or power?
                 break
            elif key == 3:
                 raise KeyboardInterrupt
-        print(self.stats())
+        cprint(self.stats())
 
 class Goblin(Entity):
     """Subclass of Entity for goblin objects including AI move generators."""
@@ -248,7 +248,7 @@ class Dungeon(object):
     def print_board(self):
         """Print board in formatted, front-end grid form."""
         for row in self.board:
-            print(' '.join(row))
+            cprint(' '.join(row))
 
     def return_board(self):
         """Return board in formatted, front-end grid form."""
@@ -305,7 +305,7 @@ titles = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoyi
 "Thoughtful", "Thrilling", "Timid", "Tireless", "Tolerant", "Tough", "Tricky", "Trusting", "Ugly",
 "Understanding", "Unhappy", "Unique", "Unlucky", "Unselfish", "Vain", "Warm", "Wild", "Willing",
 "Wise", "Witty"]
-print(r"""
+cprint(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
  / _// _ `/ _ `/ / -_)    / -_|_-</ __/ / (_ / _ `/  ' \/ -_|_-<  /___/ / __// // / / / / 
@@ -331,7 +331,7 @@ name = profanity.censor(input("""Hello adventurer!
 What is your name?
 """))
 clear = system('cls')
-print("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
+cprint("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
 lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
 run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
 take shelter in the tower.
@@ -358,7 +358,7 @@ while True:
     elif key == 3:
         raise KeyboardInterrupt
 clear = system('cls')
-print("""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
+cprint("""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
 magical force. A shrill cackle fills the air as you scan your surroundings. As the first goblins step out
 of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 {}
@@ -391,7 +391,7 @@ while True:
     turn = 1
     while goblin_count > 0:
         #Write player and goblin turn loop here
-        print("""ROUND {}
+        cprint("""ROUND {}
 
 PLAYER TURN
 
