@@ -27,12 +27,15 @@ from random import choice, randint
 from sys import exit
 from time import sleep
 
+import colorama
 from profanity import profanity
+from termcolor import colored, cprint
 from vlc import MediaPlayer
 
 from msvcrt import getch
 
 
+colorama.init()
 class Entity(object):
     """Base class for all entities in the game."""
 
