@@ -441,7 +441,33 @@ That move is not valid!""")
                         sleep(3)
                 break
             elif key == 50:
-                #Use damage function
+                while player_continue:
+                    empty = colored('O', 'grey', 'on_white')
+                    original_x = player.getx(board)
+                    original_y = player.gety(board)
+                    check = []
+                    try:
+                        check.append(board.board[original_x + 1][original_y] == empty)
+                    except IndexError:
+                        pass
+                    try:
+                        check.append(board.board[original_x - 1][original_y] == empty)
+                    except IndexError:
+                        pass
+                    try:
+                        check.append(board.board[original_x][original_y + 1] == empty)
+                    except IndexError:
+                        pass
+                    try:
+                        check.append(board.board[original_x][original_y - 1] == empty)
+                    except IndexError:
+                        pass
+                    if all(check):
+                        print("""
+There is no one in range!""")
+                        sleep(3)
+                        player_continue = False
+                    #Ask which enemy the player wants to attack then call damage() on that enemy
                 break
             elif key == 3:
                 raise KeyboardInterrupt
