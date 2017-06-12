@@ -363,7 +363,6 @@ of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 
 Press ENTER to start climbing Goblin Tower""".format(player.stats()))
 input()
-clear = system('cls')
 while True:
     board = Dungeon(10)
     low_health = randint(1, 5)
@@ -389,6 +388,8 @@ while True:
     turn = 1
     while goblin_count > 0:
         #Write player and goblin turn loop here
+        clear = system('cls')
+        player_continue = True
         round_screen = """ROUND {}
 
 PLAYER TURN
@@ -398,10 +399,10 @@ PLAYER TURN
         cprint("""
 1. Move
 2. Attack""")
-        while True:
+        while player_continue:
             key = ord(getch())
             if key == 49:
-                while True:
+                while player_continue:
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
@@ -411,7 +412,7 @@ What direction?
 2. Down
 3. Left
 4. Right""")
-                    while True:
+                    while player_continue:
                         key = ord(getch())
                         if key == 49:
                             direction = 'up'
@@ -425,8 +426,12 @@ What direction?
                         elif key == 52:
                             direction = 'right'
                             break
+                        elif key == 27:
+                            player_continue = False
                         elif key == 3:
                             raise KeyboardInterrupt
+                    if not player_continue:
+                        break
                     if player.move_valid(board, direction, 1):
                         player.move(board, direction, 1)
                         break
@@ -440,6 +445,8 @@ That move is not valid!""")
                 break
             elif key == 3:
                 raise KeyboardInterrupt
+        if not player_continue:
+            continue
         round_screen = """ROUND {}
 
 PLAYER TURN
