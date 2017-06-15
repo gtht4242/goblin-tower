@@ -394,7 +394,8 @@ while True:
 
 PLAYER TURN
 
-{}""".format(turn, board.return_board())
+{}
+{}""".format(turn, board.return_board(), player.stats())
         cprint(round_screen)
         cprint("""
 1. Move
@@ -477,7 +478,8 @@ There is no one in range!""")
 
 PLAYER TURN
 
-{}""".format(turn, board.return_board())
+{}
+{}""".format(turn, board.return_board(), player.stats())
         clear = system('cls')
         print(round_screen)
         #Goblin turn starts here
