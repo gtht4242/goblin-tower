@@ -381,8 +381,8 @@ while True:
                      "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
                      "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
-    player.rand_spawn(board)
-    goblin1.rand_spawn(board)
+    player.spawn(board, 1, 1)
+    goblin1.spawn(board, 0, 1)
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
     goblin_count = 3
@@ -427,15 +427,14 @@ What direction?""")
                             player_continue = False
                         elif key == 3:
                             raise KeyboardInterrupt
-                    if not player_continue:
-                        break
-                    if player.move_valid(board, direction, 1):
-                        player.move(board, direction, 1)
-                        break
-                    else:
-                        cprint("""
+                    if player_continue:
+                        if player.move_valid(board, direction, 1):
+                            player.move(board, direction, 1)
+                            break
+                        else:
+                            cprint("""
 That move is not valid!""")
-                        sleep(3)
+                            sleep(3)
                 break
             elif key == 50:
                 while player_continue:
@@ -465,7 +464,6 @@ There is no one in range!""")
                         sleep(3)
                         player_continue = False
                     else:
-                    #Ask which enemy the player wants to attack then call damage() on that enemy
                         adjacent = []
                         if original_x + 1 < board.size:
                             adjacent.append(board.board[original_y][original_x + 1])
@@ -476,7 +474,8 @@ There is no one in range!""")
                         if original_y - 1 > -1:
                             adjacent.append(board.board[original_y - 1][original_x])
                         attack_prompt = """
-Select your target."""
+Select your target.
+"""
                         attack_num = 1
                         for char in adjacent:
                             if char == goblin1.sym:
@@ -488,8 +487,10 @@ Select your target."""
                             elif char == goblin3.sym:
                                 attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
                                 attack_num += 1
+                        clear = system('cls')
+                        cprint(round_screen)
                         cprint(attack_prompt)
-                        while True:
+                        while player_continue:
                             key = ord(getch())
                             if key == 49 and '1' in attack_prompt:
                                 break
@@ -497,9 +498,13 @@ Select your target."""
                                 break
                             elif key == 51 and '3' in attack_prompt:
                                 break
+                            elif key == 27:
+                                player_continue = False
                             elif key == 3:
                                 raise KeyboardInterrupt
-                        exit() #Db
+                        if player_continue:
+                            #Call damage() on selected enemy
+                            exit() #Db
                 break
             elif key == 3:
                 raise KeyboardInterrupt
