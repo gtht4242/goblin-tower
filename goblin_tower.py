@@ -408,24 +408,19 @@ PLAYER TURN
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-What direction?
-
-1. Up
-2. Down
-3. Left
-4. Right""")
+What direction?""")
                     while player_continue:
                         key = ord(getch())
-                        if key == 49:
+                        if key == 72:
                             direction = 'up'
                             break
-                        elif key == 50:
+                        elif key == 80:
                             direction = 'down'
                             break
-                        elif key == 51:
+                        elif key == 75:
                             direction = 'left'
                             break
-                        elif key == 52:
+                        elif key == 77:
                             direction = 'right'
                             break
                         elif key == 27:
@@ -449,19 +444,19 @@ That move is not valid!""")
                     original_y = player.gety(board)
                     check = []
                     try:
-                        check.append(board.board[original_x + 1][original_y] == empty)
+                        check.append(board.board[original_y][original_x + 1] == empty)
                     except IndexError:
                         pass
                     try:
-                        check.append(board.board[original_x - 1][original_y] == empty)
+                        check.append(board.board[original_y][original_x - 1] == empty)
                     except IndexError:
                         pass
                     try:
-                        check.append(board.board[original_x][original_y + 1] == empty)
+                        check.append(board.board[original_y + 1][original_x] == empty)
                     except IndexError:
                         pass
                     try:
-                        check.append(board.board[original_x][original_y - 1] == empty)
+                        check.append(board.board[original_y - 1][original_x] == empty)
                     except IndexError:
                         pass
                     if all(check):
