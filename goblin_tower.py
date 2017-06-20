@@ -437,7 +437,7 @@ What direction?
                         player.move(board, direction, 1)
                         break
                     else:
-                        print("""
+                        cprint("""
 That move is not valid!""")
                         sleep(3)
                 break
@@ -464,11 +464,46 @@ That move is not valid!""")
                     except IndexError:
                         pass
                     if all(check):
-                        print("""
+                        cprint("""
 There is no one in range!""")
                         sleep(3)
                         player_continue = False
+                    else:
                     #Ask which enemy the player wants to attack then call damage() on that enemy
+                        adjacent = []
+                        if original_x + 1 < board.size:
+                            adjacent.append(board.board[original_y][original_x + 1])
+                        if original_y + 1 < board.size:
+                            adjacent.append(board.board[original_y + 1][original_x])
+                        if original_x - 1 > -1:
+                            adjacent.append(board.board[original_y][original_x - 1])
+                        if original_y - 1 > -1:
+                            adjacent.append(board.board[original_y - 1][original_x])
+                        attack_prompt = """
+Select your target."""
+                        attack_num = 1
+                        for char in adjacent:
+                            if char == goblin1.sym:
+                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin1.role)
+                                attack_num += 1
+                            elif char == goblin2.sym:
+                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin2.role)
+                                attack_num += 1
+                            elif char == goblin3.sym:
+                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
+                                attack_num += 1
+                        cprint(attack_prompt)
+                        while True:
+                            key = ord(getch())
+                            if key == 49 and '1' in attack_prompt:
+                                break
+                            elif key == 50 and '2' in attack_prompt:
+                                break
+                            elif key == 51 and '3' in attack_prompt:
+                                break
+                            elif key == 3:
+                                raise KeyboardInterrupt
+                        exit() #Db
                 break
             elif key == 3:
                 raise KeyboardInterrupt
@@ -484,4 +519,4 @@ PLAYER TURN
         print(round_screen)
         #Goblin turn starts here
         turn += 1
-        exit()
+        exit() #Db
