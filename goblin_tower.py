@@ -303,6 +303,7 @@ titles = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoyi
 "Thoughtful", "Thrilling", "Timid", "Tireless", "Tolerant", "Tough", "Tricky", "Trusting", "Ugly",
 "Understanding", "Unhappy", "Unique", "Unlucky", "Unselfish", "Vain", "Warm", "Wild", "Willing",
 "Wise", "Witty"]
+clear = system('cls')
 cprint(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
