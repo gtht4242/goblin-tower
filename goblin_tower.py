@@ -381,8 +381,8 @@ while True:
                      "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
                      "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
-    player.spawn(board, 1, 1)
-    goblin1.spawn(board, 0, 1)
+    player.spawn(board, 0, 1)
+    goblin1.spawn(board, 0, 2)
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
     goblin_count = 3
@@ -441,70 +441,55 @@ That move is not valid!""")
                     empty = colored('O', 'grey', 'on_white')
                     original_x = player.getx(board)
                     original_y = player.gety(board)
-                    check = []
-                    try:
-                        check.append(board.board[original_y][original_x + 1] == empty)
-                    except IndexError:
-                        pass
-                    try:
-                        check.append(board.board[original_y][original_x - 1] == empty)
-                    except IndexError:
-                        pass
-                    try:
-                        check.append(board.board[original_y + 1][original_x] == empty)
-                    except IndexError:
-                        pass
-                    try:
-                        check.append(board.board[original_y - 1][original_x] == empty)
-                    except IndexError:
-                        pass
-                    if all(check):
+                    adjacent = []
+                    if original_x + 1 < board.size:
+                        adjacent.append(board.board[original_y][original_x + 1])
+                    if original_y + 1 < board.size:
+                        adjacent.append(board.board[original_y + 1][original_x])
+                    if original_x - 1 > -1:
+                        adjacent.append(board.board[original_y][original_x - 1])
+                    if original_y - 1 > -1:
+                        adjacent.append(board.board[original_y - 1][original_x])
+                    for char in adjacent:
+                        if char != empty:
+                            break
+                    else:
                         cprint("""
 There is no one in range!""")
                         sleep(3)
                         player_continue = False
-                    else:
-                        adjacent = []
-                        if original_x + 1 < board.size:
-                            adjacent.append(board.board[original_y][original_x + 1])
-                        if original_y + 1 < board.size:
-                            adjacent.append(board.board[original_y + 1][original_x])
-                        if original_x - 1 > -1:
-                            adjacent.append(board.board[original_y][original_x - 1])
-                        if original_y - 1 > -1:
-                            adjacent.append(board.board[original_y - 1][original_x])
-                        attack_prompt = """
+                    attack_prompt = """
 Select your target.
 """
-                        attack_num = 1
-                        for char in adjacent:
-                            if char == goblin1.sym:
-                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin1.role)
-                                attack_num += 1
-                            elif char == goblin2.sym:
-                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin2.role)
-                                attack_num += 1
-                            elif char == goblin3.sym:
-                                attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
-                                attack_num += 1
-                        clear = system('cls')
-                        cprint(round_screen)
-                        cprint(attack_prompt)
-                        while player_continue:
-                            key = ord(getch())
-                            if key == 49 and '1' in attack_prompt:
-                                break
-                            elif key == 50 and '2' in attack_prompt:
-                                break
-                            elif key == 51 and '3' in attack_prompt:
-                                break
-                            elif key == 27:
-                                player_continue = False
-                            elif key == 3:
-                                raise KeyboardInterrupt
-                        if player_continue:
-                            #Call damage() on selected enemy
-                            exit() #Db
+                    attack_num = 1
+                    for char in adjacent:
+                        if char == goblin1.sym:
+                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin1.role)
+                            attack_num += 1
+                        elif char == goblin2.sym:
+                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin2.role)
+                            attack_num += 1
+                        elif char == goblin3.sym:
+                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
+                            attack_num += 1
+                    clear = system('cls')
+                    cprint(round_screen)
+                    cprint(attack_prompt)
+                    while player_continue:
+                        key = ord(getch())
+                        if key == 49 and '1' in attack_prompt:
+                            break
+                        elif key == 50 and '2' in attack_prompt:
+                            break
+                        elif key == 51 and '3' in attack_prompt:
+                            break
+                        elif key == 27:
+                            player_continue = False
+                        elif key == 3:
+                            raise KeyboardInterrupt
+                    if player_continue:
+                        #Call damage() on selected enemy
+                        exit() #Db
                 break
             elif key == 3:
                 raise KeyboardInterrupt
