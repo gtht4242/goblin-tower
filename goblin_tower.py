@@ -55,6 +55,7 @@ class Entity(object):
     
     def damage(self, board, enemy):
         """Run damage sequence including exiting on player death and updating values on goblin death."""
+        global goblin_count
         self.status = "Attacking"
         enemy.status = "Attacking"
         enemy.health -= self.power
@@ -66,7 +67,8 @@ class Entity(object):
 {} attacks {} for {} damage!""".format(self.name, enemy.name,
                                        self.power))
         sleep(2)
-        cprint(a, '\n', b)
+        cprint(a)
+        cprint(b)
         if player.status == "Dead":
             player.health = 0
             cprint("""
@@ -462,15 +464,19 @@ There is no one in range!""")
 Select your target.
 """
                     attack_num = 1
+                    enemy_order = {}
                     for char in adjacent:
                         if char == goblin1.sym:
                             attack_prompt += '\n' + "{}. {}".format(attack_num, goblin1.role)
+                            enemy_order[attack_num] = goblin1
                             attack_num += 1
                         elif char == goblin2.sym:
                             attack_prompt += '\n' + "{}. {}".format(attack_num, goblin2.role)
+                            enemy_order[attack_num] = goblin2
                             attack_num += 1
                         elif char == goblin3.sym:
                             attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
+                            enemy_order[attack_num] = goblin3
                             attack_num += 1
                     clear = system('cls')
                     cprint(round_screen)
@@ -478,18 +484,24 @@ Select your target.
                     while player_continue:
                         key = ord(getch())
                         if key == 49 and '1' in attack_prompt:
+                            target = 1
                             break
                         elif key == 50 and '2' in attack_prompt:
+                            target = 2
                             break
                         elif key == 51 and '3' in attack_prompt:
+                            target = 3
                             break
                         elif key == 27:
                             player_continue = False
                         elif key == 3:
                             raise KeyboardInterrupt
                     if player_continue:
-                        #Call damage() on selected enemy
-                        exit() #Db
+                        clear = system('cls')
+                        cprint(round_screen)
+                        player.damage(board, enemy_order[target])
+                        sleep(5)
+                    break
                 break
             elif key == 3:
                 raise KeyboardInterrupt
