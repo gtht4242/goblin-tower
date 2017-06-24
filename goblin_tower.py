@@ -61,6 +61,7 @@ class Entity(object):
         enemy.health -= self.power
         if not enemy.is_alive():
             enemy.status = "Dead"
+            enemy.health = 0
         a = self.stats()
         b = enemy.stats()
         cprint("""
