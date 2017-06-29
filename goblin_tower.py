@@ -405,7 +405,6 @@ PLAYER TURN
 1. Move
 2. Attack
 3. Examine""")
-        #Add third action, Examine, which displays the stats of any one alive enemy
         while player_continue:
             key = ord(getch())
             if key == 49:
@@ -464,34 +463,34 @@ There is no one in range!""")
                         sleep(3)
                         player_continue = False
                     attack_num = 1
-                    enemy_order = {}
+                    attack_order = {}
                     for char in adjacent:
                         if char == goblin1.sym:
-                            enemy_order[attack_num] = goblin1
+                            attack_order[attack_num] = goblin1
                             attack_num += 1
                         elif char == goblin2.sym:
-                            enemy_order[attack_num] = goblin2
+                            attack_order[attack_num] = goblin2
                             attack_num += 1
                         elif char == goblin3.sym:
-                            enemy_order[attack_num] = goblin3
+                            attack_order[attack_num] = goblin3
                             attack_num += 1
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
 Select your target.
 """)
-                    for enemy in enemy_order:
-                        print('{}. {}'.format(enemy, enemy_order[enemy].role))
+                    for enemy in attack_order:
+                        cprint('{}. {}'.format(enemy, attack_order[enemy].role))
                     while player_continue:
                         key = ord(getch())
-                        if key == 49 and 1 in enemy_order:
-                            target = 1
+                        if key == 49 and 1 in attack_order:
+                            attack_target = 1
                             break
-                        elif key == 50 and 2 in enemy_order:
-                            target = 2
+                        elif key == 50 and 2 in attack_order:
+                            attack_target = 2
                             break
-                        elif key == 51 and 3 in enemy_order:
-                            target = 3
+                        elif key == 51 and 3 in attack_order:
+                            attack_target = 3
                             break
                         elif key == 27:
                             player_continue = False
@@ -500,13 +499,46 @@ Select your target.
                     if player_continue:
                         clear = system('cls')
                         cprint(round_screen)
-                        player.damage(board, enemy_order[target])
+                        player.damage(board, attack_order[attack_target])
                         sleep(5)
                     break
                 break
             elif key == 51:
                 while player_continue:
-                    pass
+                    clear = system('cls')
+                    cprint(round_screen)
+                    cprint("""
+Select your target.
+""")
+                    examine_num = 1
+                    examine_order = {}
+                    for gob in (goblin1, goblin2, goblin3):
+                        if gob.status != 'Dead':
+                            examine_order[examine_num] = gob
+                            cprint('{}. {}'.format(examine_num, gob.role))
+                            examine_num += 1
+                    while player_continue:
+                        key = ord(getch())
+                        if key == 49 and 1 in examine_order:
+                            examine_target = 1
+                            break
+                        elif key == 50 and 2 in examine_order:
+                            examine_target = 2
+                            break
+                        elif key == 51 and 3 in examine_order:
+                            examine_target = 3
+                            break
+                        elif key == 27:
+                            player_continue = False
+                        elif key == 3:
+                            raise KeyboardInterrupt
+                    if player_continue:
+                        clear = system('cls')
+                        cprint(round_screen)
+                        cprint(examine_order[examine_target].stats())
+                        input()
+                        break
+                break
             elif key == 3:
                 raise KeyboardInterrupt
         if not player_continue:
@@ -518,7 +550,7 @@ PLAYER TURN
 {}
 {}""".format(turn, board.return_board(), player.stats())
         clear = system('cls')
-        print(round_screen)
+        cprint(round_screen)
         #Goblin turn starts here
         turn += 1
         exit() #Db
