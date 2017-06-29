@@ -17,7 +17,7 @@ You must ascend Goblin Tower and reach as high a floor as possible.
 #    - Context messages
 #    - Sleep delays
 #    - Screen clears
-#    - Music and sound effects (via vlc.MediaPlayer)
+#    - Music (Divinity: Orginal Sin?) and sound effects (via vlc.MediaPlayer)
 #    - More ASCII art
 #    - "You are the nth adventurer to enter Goblin Tower" msg using
 #      a text file to store n
@@ -384,8 +384,8 @@ while True:
                      "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
                      "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
-    player.spawn(board, 0, 1)
-    goblin1.spawn(board, 0, 2)
+    player.rand_spawn(board)
+    goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
     goblin_count = 3
@@ -403,7 +403,9 @@ PLAYER TURN
         cprint(round_screen)
         cprint("""
 1. Move
-2. Attack""")
+2. Attack
+3. Examine""")
+        #Add third action, Examine, which displays the stats of any one alive enemy
         while player_continue:
             key = ord(getch())
             if key == 49:
@@ -461,36 +463,34 @@ That move is not valid!""")
 There is no one in range!""")
                         sleep(3)
                         player_continue = False
-                    attack_prompt = """
-Select your target.
-"""
                     attack_num = 1
                     enemy_order = {}
                     for char in adjacent:
                         if char == goblin1.sym:
-                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin1.role)
                             enemy_order[attack_num] = goblin1
                             attack_num += 1
                         elif char == goblin2.sym:
-                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin2.role)
                             enemy_order[attack_num] = goblin2
                             attack_num += 1
                         elif char == goblin3.sym:
-                            attack_prompt += '\n' + "{}. {}".format(attack_num, goblin3.role)
                             enemy_order[attack_num] = goblin3
                             attack_num += 1
                     clear = system('cls')
                     cprint(round_screen)
-                    cprint(attack_prompt)
+                    cprint("""
+Select your target.
+""")
+                    for enemy in enemy_order:
+                        print('{}. {}'.format(enemy, enemy_order[enemy].role))
                     while player_continue:
                         key = ord(getch())
-                        if key == 49 and '1' in attack_prompt:
+                        if key == 49 and 1 in enemy_order:
                             target = 1
                             break
-                        elif key == 50 and '2' in attack_prompt:
+                        elif key == 50 and 2 in enemy_order:
                             target = 2
                             break
-                        elif key == 51 and '3' in attack_prompt:
+                        elif key == 51 and 3 in enemy_order:
                             target = 3
                             break
                         elif key == 27:
@@ -504,6 +504,9 @@ Select your target.
                         sleep(5)
                     break
                 break
+            elif key == 51:
+                while player_continue:
+                    pass
             elif key == 3:
                 raise KeyboardInterrupt
         if not player_continue:
