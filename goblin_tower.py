@@ -3,24 +3,25 @@
 You must ascend Goblin Tower and reach as high a floor as possible.
 """
 #TO-DO:
-#Write Player and Goblin subclasses, they will:
-#    - Handle keyboard input (use ord(getch()) and call damage(), move(), item())
-#      (or maybe just do this in the player turn loop)
-#    - Handle enemy AI (Goblin only)
+#Goblin class to handle enemy AI
 #
-#Write an Item class to handle:
-#    - Printing inventory (use list_generator.py for numbered list)
-#    - Processing number input into calling item subclass method
-#Write subclasses for seperate item types (eg. grenade, potion)
+#Write Item class to handle:
+#    - Printing/returning inventory (use list_generator.py for numbered list)
+#    - Processing number input into calling item subclass method (or put this in player turn loop instead)
+#Write subclasses for seperate item types? (eg. grenade, potion)
+#
+#Write Save class to handle:
+#   - Saving relevant variables and attributes at start of round into file with inputted name
+#     (including option to overwrite existing file)
+#   - Reloading from file at boot up
 #
 #To improve player experience add:
 #    - Context messages
 #    - Sleep delays
 #    - Screen clears
-#    - Music (Divinity: Orginal Sin?) and sound effects (via vlc.MediaPlayer)
+#    - Music (Divinity: Orginal Sin?) and sound effects (via multiple instances of vlc.MediaPlayer)
 #    - More ASCII art
-#    - "You are the nth adventurer to enter Goblin Tower" msg using
-#      a text file to store n
+#    - "You are the nth adventurer to enter Goblin Tower" msg using a text file to store n
 
 from os import system
 from random import choice, randint
