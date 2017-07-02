@@ -4,6 +4,10 @@ You must ascend Goblin Tower and reach as high a floor as possible.
 """
 #TO-DO:
 #Goblin class to handle enemy AI
+#   - All goblins attack player if adjacent
+#   - Assassin flanks
+#   - Champion charges head-on
+#   - Knight follows Champion
 #
 #Write Item class to handle:
 #    - Printing/returning inventory (use list_generator.py for numbered list)
