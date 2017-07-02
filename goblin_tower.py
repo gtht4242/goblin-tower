@@ -392,7 +392,6 @@ while True:
     goblin_count = 3
     turn = 1
     while goblin_count > 0:
-        #Write player and goblin turn loop here
         clear = system('cls')
         player_continue = True
         round_screen = """ROUND {}
@@ -413,7 +412,7 @@ PLAYER TURN
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-What direction?""")
+Select a direction.""")
                     while player_continue:
                         key = ord(getch())
                         if key == 72:
@@ -478,7 +477,7 @@ There is no one in range!""")
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-Select your target.
+Select a target.
 """)
                     for enemy in attack_order:
                         cprint('{}. {}'.format(enemy, attack_order[enemy].role))
@@ -509,7 +508,7 @@ Select your target.
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-Select your target.
+Select a target.
 """)
                     examine_num = 1
                     examine_order = {}
