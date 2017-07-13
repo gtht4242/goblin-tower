@@ -483,20 +483,8 @@ That move is not valid!""")
                 break
             elif key == 50:
                 while player_continue:
-                    empty = colored('O', 'grey', 'on_white')
-                    original_x = player.getx(board)
-                    original_y = player.gety(board)
-                    adjacent = []
-                    if original_x + 1 < board.size:
-                        adjacent.append(board.board[original_y][original_x + 1])
-                    if original_y + 1 < board.size:
-                        adjacent.append(board.board[original_y + 1][original_x])
-                    if original_x - 1 > -1:
-                        adjacent.append(board.board[original_y][original_x - 1])
-                    if original_y - 1 > -1:
-                        adjacent.append(board.board[original_y - 1][original_x])
-                    for char in adjacent:
-                        if char != empty:
+                    for goblin in (goblin1, goblin2, goblin3):
+                        if goblin.adjacent(board, player):
                             break
                     else:
                         cprint("""
@@ -505,44 +493,48 @@ There is no one in range!""")
                         player_continue = False
                     attack_num = 1
                     attack_order = {}
-                    for char in adjacent:
-                        if char == goblin1.sym:
-                            attack_order[attack_num] = goblin1
-                            attack_num += 1
-                        elif char == goblin2.sym:
-                            attack_order[attack_num] = goblin2
-                            attack_num += 1
-                        elif char == goblin3.sym:
-                            attack_order[attack_num] = goblin3
-                            attack_num += 1
-                    clear = system('cls')
-                    cprint(round_screen)
-                    cprint("""
-Select a target.
-""")
-                    for enemy in attack_order:
-                        cprint('{}. {}'.format(enemy, attack_order[enemy].role))
-                    while player_continue:
-                        key = ord(getch())
-                        if key == 49 and 1 in attack_order:
-                            attack_target = 1
-                            break
-                        elif key == 50 and 2 in attack_order:
-                            attack_target = 2
-                            break
-                        elif key == 51 and 3 in attack_order:
-                            attack_target = 3
-                            break
-                        elif key == 27:
-                            player_continue = False
-                        elif key == 3:
-                            raise KeyboardInterrupt
+                    for goblin in (goblin1, goblin2, goblin3):
+                        if goblin.adjacent(board, player):
+                            attack_order[attack_num] = goblin
+                            attack_num += 1                               
+                    #for char in adjacent:
+                    #    if char == goblin1.sym:
+                    #        attack_order[attack_num] = goblin1
+                    #        attack_num += 1
+                    #    elif char == goblin2.sym:
+                    #        attack_order[attack_num] = goblin2
+                    #        attack_num += 1
+                    #    elif char == goblin3.sym:
+                    #        attack_order[attack_num] = goblin3
+                    #        attack_num += 1
                     if player_continue:
                         clear = system('cls')
                         cprint(round_screen)
-                        player.damage(board, attack_order[attack_target])
-                        sleep(5)
-                    break
+                        cprint("""
+Select a target.
+""")
+                        for enemy in attack_order:
+                            cprint('{}. {}'.format(enemy, attack_order[enemy].role))
+                        while player_continue:
+                            key = ord(getch())
+                            if key == 49 and 1 in attack_order:
+                                attack_target = 1
+                                break
+                            elif key == 50 and 2 in attack_order:
+                                attack_target = 2
+                                break
+                            elif key == 51 and 3 in attack_order:
+                                attack_target = 3
+                                break
+                            elif key == 27:
+                                player_continue = False
+                            elif key == 3:
+                                raise KeyboardInterrupt
+                            clear = system('cls')
+                            cprint(round_screen)
+                            player.damage(board, attack_order[attack_target])
+                            sleep(5)
+                        break
                 break
             elif key == 51:
                 while player_continue:
