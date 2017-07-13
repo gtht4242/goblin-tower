@@ -62,7 +62,7 @@ class Entity(object):
         """Run damage sequence including exiting on player death and updating values on goblin death."""
         global goblin_count
         self.status = "Attacking"
-        enemy.status = "Attacking"
+        enemy.status = "Defending"
         enemy.health -= self.power
         if not enemy.is_alive():
             enemy.status = "Dead"
