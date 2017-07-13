@@ -258,30 +258,12 @@ class Goblin(Entity):
 
     def a_direction(self, board, player):
         """Modifies direction attibute of goblin based on Assassin AI."""
-        if self.adjacent(player):
-            # Goblin attacks
-            pass
-        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
-            # Goblin on same row/column as player thus move towards player
-            pass
 
     def k_direction(self, board, player):
         """Modifies direction attibute of goblin based on Knight AI."""
-        if self.adjacent(player):
-            # Goblin attacks
-            pass
-        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
-            # Goblin on same row/column as player thus move towards player
-            pass
 
     def c_direction(self, board, player):
         """Modifies direction attibute of goblin based on Champion AI."""
-        if self.adjacent(player):
-            # Goblin attacks
-            pass
-        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
-            # Goblin on same row/column as player thus move towards player
-            pass
 
 
 class Dungeon(object):
@@ -426,6 +408,7 @@ while True:
                      "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
                      "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
+    goblins = (goblin1, goblin2, goblin3)
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
@@ -483,7 +466,7 @@ That move is not valid!""")
                 break
             elif key == 50:
                 while player_continue:
-                    for goblin in (goblin1, goblin2, goblin3):
+                    for goblin in goblins:
                         if goblin.adjacent(board, player):
                             break
                     else:
@@ -493,7 +476,7 @@ There is no one in range!""")
                         player_continue = False
                     attack_num = 1
                     attack_order = {}
-                    for goblin in (goblin1, goblin2, goblin3):
+                    for goblin in goblins:
                         if goblin.adjacent(board, player):
                             attack_order[attack_num] = goblin
                             attack_num += 1                               
@@ -535,10 +518,10 @@ Select a target.
 """)
                     examine_num = 1
                     examine_order = {}
-                    for gob in (goblin1, goblin2, goblin3):
-                        if gob.status != 'Dead':
-                            examine_order[examine_num] = gob
-                            cprint('{}. {}'.format(examine_num, gob.role))
+                    for goblin in goblins:
+                        if goblin.status != 'Dead':
+                            examine_order[examine_num] = goblin
+                            cprint('{}. {}'.format(examine_num, goblin.role))
                             examine_num += 1
                     while player_continue:
                         key = ord(getch())
@@ -575,6 +558,16 @@ GOBLIN TURN
 {}""".format(turn, board.return_board(), player.stats())
         clear = system('cls')
         cprint(round_screen)
+        for goblin in goblins:
+            if goblin.adjacent(board, player):
+                # Goblin attacks
+                pass
+            elif goblin.getx(board) == player.getx(board) or goblin.gety(board) == player.gety(board):
+                # Goblin on same row/column as player thus move towards player
+                pass
+            else:
+                # Call unique AI method based on role
+                pass
         #End of round
         turn += 1
         exit() #Db
