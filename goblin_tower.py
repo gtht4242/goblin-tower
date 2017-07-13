@@ -3,7 +3,7 @@
 You must ascend Goblin Tower and reach as high a floor as possible.
 """
 #TO-DO:
-#Goblin class to handle enemy AI
+#Goblin class to handle enemy AI (use direction attribute which AI methods change)
 #   - All goblins attack player if adjacent
 #   - Assassin flanks
 #   - Champion charges head-on
@@ -107,9 +107,7 @@ Class: {}
 Health: {}/{}
 Power: {}
 Status: {}
-Description: {}""".format(self.name, self.role, self.health,
-                          self.max_health, self.power,
-                          self.status, self.descript)
+Description: {}""".format(self.name, self.role, self.health, self.max_health, self.power, self.status, self.descript)
         return a
 
     def getx(self, board):
@@ -127,6 +125,23 @@ Description: {}""".format(self.name, self.role, self.health,
                 if c == self.sym:
                     return n
         return -1
+
+    def adjacent(self, board, entity):
+        """True if self is adjacent to entity on board, else false."""
+        self_adjacent = []
+        if self.getx(board) + 1 < board.size:
+            self_adjacent.append(board.board[self.gety(board)][self.getx(board) + 1])
+        if self.gety(board) + 1 < board.size:
+            self_adjacent.append(board.board[self.gety(board) + 1][self.getx(board)])
+        if self.getx(board) - 1 > -1:
+            self_adjacent.append(board.board[self.gety(board)][self.getx(board) - 1])
+        if self.gety(board) - 1 > -1:
+            self_adjacent.append(board.board[self.gety(board) - 1][self.getx(board)])
+        for char in self_adjacent:
+            if char == entity.sym:
+                return True
+        else:
+            return False
 
     def spawn(self, board, x, y):
         """Replaces the given coordinate in board with the entity's symbol."""
@@ -210,9 +225,7 @@ Floor: {}
 Health: {}/{}
 Power: {}
 Status: {}
-Description: {}""".format(self.name, self.level, self.role,
-                          self.floor, self.health,
-                          self.max_health, self.power,
+Description: {}""".format(self.name, self.level, self.role, self.floor, self.health, self.max_health, self.power,
                           self.status, self.descript)
         return a
 
@@ -239,7 +252,36 @@ LEVEL UP! - Add 1 point to health or power?
         cprint(self.stats())
 
 class Goblin(Entity):
-    """Subclass of Entity for goblin objects including AI move generators."""
+    """Subclass of Entity for goblin objects including enemy AI move generators."""
+
+    direction = ''
+
+    def a_direction(self, board, player):
+        """Modifies direction attibute of goblin based on Assassin AI."""
+        if self.adjacent(player):
+            # Goblin attacks
+            pass
+        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
+            # Goblin on same row/column as player thus move towards player
+            pass
+
+    def k_direction(self, board, player):
+        """Modifies direction attibute of goblin based on Knight AI."""
+        if self.adjacent(player):
+            # Goblin attacks
+            pass
+        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
+            # Goblin on same row/column as player thus move towards player
+            pass
+
+    def c_direction(self, board, player):
+        """Modifies direction attibute of goblin based on Champion AI."""
+        if self.adjacent(player):
+            # Goblin attacks
+            pass
+        elif self.getx(board) == player.getx(board) or self.gety(board) == player.gety(board):
+            # Goblin on same row/column as player thus move towards player
+            pass
 
 
 class Dungeon(object):
@@ -265,11 +307,6 @@ class Dungeon(object):
                 new_board += '\n'
         return new_board
 
-
-#Db
-player = Player(20, 20, 5, "Ready", "Player", "A test player", "Fighter", colored('P', 'cyan', 'on_white'), 1, 1)
-goblin1 = Goblin(5, 5, 20, "Ready", "Trixy", "A goblin minion", "Minion", colored('G', 'red', 'on_white'))
-board = Dungeon(10)
 
 names = ['Antonio', 'Elliot', 'Amina', 'Un', 'Ezra', 'Erin', 'Willetta', 'Anisa', 'Zackary', 'Dede', 'Joye',
 'Eric', 'Marybelle', 'Cleveland', 'Hank', 'Ashanti', 'Saturnina', 'Gidget', 'Felicidad', 'Annalee', 'Palmira',
@@ -547,14 +584,15 @@ Select a target.
                 raise KeyboardInterrupt
         if not player_continue:
             continue
+        #Start of goblin turn
         round_screen = """ROUND {}
 
-PLAYER TURN
+GOBLIN TURN
 
 {}
 {}""".format(turn, board.return_board(), player.stats())
         clear = system('cls')
         cprint(round_screen)
-        #Goblin turn starts here
+        #End of round
         turn += 1
         exit() #Db
