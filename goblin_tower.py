@@ -497,16 +497,6 @@ There is no one in range!""")
                         if goblin.adjacent(board, player):
                             attack_order[attack_num] = goblin
                             attack_num += 1                               
-                    #for char in adjacent:
-                    #    if char == goblin1.sym:
-                    #        attack_order[attack_num] = goblin1
-                    #        attack_num += 1
-                    #    elif char == goblin2.sym:
-                    #        attack_order[attack_num] = goblin2
-                    #        attack_num += 1
-                    #    elif char == goblin3.sym:
-                    #        attack_order[attack_num] = goblin3
-                    #        attack_num += 1
                     if player_continue:
                         clear = system('cls')
                         cprint(round_screen)
