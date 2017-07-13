@@ -530,10 +530,10 @@ Select a target.
                                 player_continue = False
                             elif key == 3:
                                 raise KeyboardInterrupt
-                            clear = system('cls')
-                            cprint(round_screen)
-                            player.damage(board, attack_order[attack_target])
-                            sleep(5)
+                        clear = system('cls')
+                        cprint(round_screen)
+                        player.damage(board, attack_order[attack_target])
+                        sleep(5)
                         break
                 break
             elif key == 51:
