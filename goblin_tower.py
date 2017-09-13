@@ -43,6 +43,7 @@ from termcolor import colored, cprint
 from vlc import MediaPlayer
 
 colorama.init()
+empty_char = colored('O', 'grey', 'on_white')
 
 class Entity(object):
     """Base class for all entities in the game."""
@@ -146,13 +147,13 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
         while True:
             x = randint(0, board.size - 1)
             y = randint(0, board.size - 1)
-            if board.board[y][x] == colored('O', 'grey', 'on_white'):
+            if board.board[y][x] == empty_char:
                 board.board[y][x] = self.sym
                 break
 
     def remove(self, board):
         """Replaces the entity in the board with 'O'."""
-        board.board[self.gety(board)][self.getx(board)] = colored('O', 'grey', 'on_white')
+        board.board[self.gety(board)][self.getx(board)] = empty_char
 
     def move_valid(self, board, direction, n):
         """If move is valid return True. else False."""
@@ -163,7 +164,7 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
                 y -= n
             elif direction == 'left':
                 x -= n
-            if x < 0 or y < 0 or board.board[y][x] != colored('O', 'grey', 'on_white'):
+            if x < 0 or y < 0 or board.board[y][x] != empty_char:
                 return False
             else:
                 return True
@@ -172,7 +173,7 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
                 y += n
             elif direction == 'right':
                 x += n
-            if x >= board.size or y >= board.size or board.board[y][x] != colored('O', 'grey', 'on_white'):
+            if x >= board.size or y >= board.size or board.board[y][x] != empty_char:
                 return False
             else:
                 return True
@@ -189,7 +190,7 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
             board.board[original_y][original_x - n] = self.sym
         elif direction == 'right':
             board.board[original_y][original_x + n] = self.sym
-        board.board[original_y][original_x] = colored('O', 'grey', 'on_white')
+        board.board[original_y][original_x] = empty_char
 
 
 class Player(Entity):
@@ -256,7 +257,7 @@ class Dungeon(object):
     def __init__(self, size):
         self.size = size     
         for n in range(self.size):
-            self.board.append([colored('O', 'grey', 'on_white')] * self.size)
+            self.board.append([empty_char] * self.size)
 
     def print_board(self):
         """Print board in formatted, front-end grid form."""
