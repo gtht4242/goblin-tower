@@ -2,31 +2,36 @@
 
 You must ascend Goblin Tower and reach as high a floor as possible.
 """
-#TO-DO:
-#Goblin class to handle enemy AI (use direction attribute which AI methods change)
+# TO-DO:
+# Goblin class to handle enemy AI (use direction attribute)
 #   - All goblins attack player if adjacent
-#   - Assassin flanks
-#   - Champion charges head-on
-#   - Knight follows Champion
+#   - Else if in same row or column and path is clear, move in direction of player
+#   - Else move towards player, preferably away from other goblins
 #
-#Write Item class to handle:
-#    - Printing/returning inventory (use list_generator.py for numbered list)
-#    - Processing number input into calling item subclass method (or put this in player turn loop instead)
-#Write subclasses for seperate item types? (eg. grenade, potion)
-#
-#Write Save class to handle:
+# Write Item class to handle:
+#   - Printing/returning inventory (use list_generator.py for numbered list)
+#   - Processing number input into calling item subclass method (or put this in player turn loop instead)
+#   - Subclasses for seperate item types? (eg. grenade, potion)
+# 
+# Write Save class to handle:
 #   - Saving relevant variables and attributes at start of round into file with inputted name
 #     (including option to overwrite existing file)
-#   - Reloading from file at boot up
+#   - Option to load from file at boot up
+# 
+# To improve player experience:
+#   - Add more context print messages
+#   - Adjust sleep delays
+#   - Add music (Divinity: Orginal Sin?) and SFX (via multiple instances of vlc.MediaPlayer)
+#   - Add more ASCII art
+#   - Add "You are the nth adventurer to enter Goblin Tower" message using a text file to store n
+#   - Write proper start and gameloop functions so game can return to start screen on death
 #
-#To improve player experience add:
-#    - Context messages
-#    - Sleep delays
-#    - Screen clears
-#    - Music (Divinity: Orginal Sin?) and sound effects (via multiple instances of vlc.MediaPlayer)
-#    - More ASCII art
-#    - "You are the nth adventurer to enter Goblin Tower" msg using a text file to store n
+# To improve developer experience:
+#   - Change all .format() strings to f-strings
+#   - Add debug tools (e.g. 'God mode', quick reset of board)
+#   - Implement 'empty space' character variable
 
+from msvcrt import getch
 from os import system
 from random import choice, randint
 from sys import exit
@@ -37,10 +42,8 @@ from profanity import profanity
 from termcolor import colored, cprint
 from vlc import MediaPlayer
 
-from msvcrt import getch
-
-
 colorama.init()
+
 class Entity(object):
     """Base class for all entities in the game."""
 
@@ -55,60 +58,55 @@ class Entity(object):
         self.sym = sym
 
     def is_alive(self):
-        """Return True if alive, False if not."""
+        """If alive return True, else False."""
         return (not self.health <= 0)
     
-    def damage(self, board, enemy):
-        """Run damage sequence including exiting on player death and updating values on goblin death."""
+    def damage(self, board, target):
+        """Run damage sequence including exiting on player death and updating game state on goblin death."""
         global goblin_count
         self.status = "Attacking"
-        enemy.status = "Defending"
-        enemy.health -= self.power
-        if not enemy.is_alive():
-            enemy.status = "Dead"
-            enemy.health = 0
-        a = self.stats()
-        b = enemy.stats()
+        target.status = "Defending"
+        target.health -= self.power
+        if not target.is_alive():
+            target.status = "Dead"
+            target.health = 0
         cprint("""
-{} attacks {} for {} damage!""".format(self.name, enemy.name,
-                                       self.power))
+{} attacks {} for {} damage!""".format(self.name, target.name, self.power))
         sleep(2)
-        cprint(a)
-        cprint(b)
+        cprint(self.stats())
+        cprint(target.stats())
         if player.status == "Dead":
-            player.health = 0
             cprint("""
 You died! - GAME OVER""")
             sleep(3)
-            with open("text_sources/hall_of_fame.txt", "a") as hall:
+            with open("text/hall_of_fame.txt", "a") as hall:
                 hall.write(player.stats() + '\n')
-            with open("text_sources/hall_of_fame.txt", "r") as hall:
+            with open("text/hall_of_fame.txt", "r") as hall:
                 cprint("""
 HALL OF FAME
 {}""".format(hall.read()))
             input("Press ENTER to quit")
             exit()
-        elif enemy.status == "Dead":
+        elif target.status == "Dead":
             player.exp += 1
             goblin_count -= 1
-            enemy.remove(board)
+            target.remove(board)
             cprint("""
-You slayed {}!""".format(enemy.name))
+You slayed {}!""".format(target.name))
             if player.exp % 5 == 0:
                 player.level_up()
         player.status = "Ready"
-        enemy.status = "Ready"
+        target.status = "Ready"
 
     def stats(self):
         """Return formatted stats for the entity."""
-        a = """
+        return """
 Name: {}
 Class: {}
 Health: {}/{}
 Power: {}
 Status: {}
 Description: {}""".format(self.name, self.role, self.health, self.max_health, self.power, self.status, self.descript)
-        return a
 
     def getx(self, board):
         """Return the x coordinate of the entity, else return -1 if not on board."""
@@ -137,14 +135,10 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
             self_adjacent.append(board.board[self.gety(board)][self.getx(board) - 1])
         if self.gety(board) - 1 > -1:
             self_adjacent.append(board.board[self.gety(board) - 1][self.getx(board)])
-        for char in self_adjacent:
-            if char == entity.sym:
-                return True
-        else:
-            return False
+        return entity.sym in self_adjacent
 
     def spawn(self, board, x, y):
-        """Replaces the given coordinate in board with the entity's symbol."""
+        """Replaces the given space in board with the entity's symbol."""
         board.board[y][x] = self.sym
 
     def rand_spawn(self, board):
@@ -158,12 +152,10 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
 
     def remove(self, board):
         """Replaces the entity in the board with 'O'."""
-        x = self.getx(board)
-        y = self.gety(board)
-        board.board[y][x] = colored('O', 'grey', 'on_white')
+        board.board[self.gety(board)][self.getx(board)] = colored('O', 'grey', 'on_white')
 
     def move_valid(self, board, direction, n):
-        """If move is valid return True. else return False."""
+        """If move is valid return True. else False."""
         x = self.getx(board)
         y = self.gety(board)
         if direction == 'left' or direction == 'up':
@@ -202,6 +194,8 @@ Description: {}""".format(self.name, self.role, self.health, self.max_health, se
 
 class Player(Entity):
     """Subclass of Entity for player object including unique stats formatter and level up sequence."""
+    exp = 0
+
     def __init__(self, health, max_health, power, status, name, descript, role, sym, level, floor):
         self.health = health
         self.max_health = max_health
@@ -213,11 +207,10 @@ class Player(Entity):
         self.sym = sym
         self.level = level
         self.floor = floor
-        self.exp = 0
 
     def stats(self):
         """Return formatted stats for player character."""
-        a = """
+        return """
 Name: {}
 Level: {}
 Class: {}
@@ -227,7 +220,6 @@ Power: {}
 Status: {}
 Description: {}""".format(self.name, self.level, self.role, self.floor, self.health, self.max_health, self.power,
                           self.status, self.descript)
-        return a
 
     def level_up(self):
         """Initiates level up sequence."""
@@ -251,27 +243,18 @@ LEVEL UP! - Add 1 point to health or power?
                 raise KeyboardInterrupt
         cprint(self.stats())
 
+
 class Goblin(Entity):
     """Subclass of Entity for goblin objects including enemy AI move generators."""
-
     direction = ''
-
-    def a_direction(self, board, player):
-        """Modifies direction attibute of goblin based on Assassin AI."""
-
-    def k_direction(self, board, player):
-        """Modifies direction attibute of goblin based on Knight AI."""
-
-    def c_direction(self, board, player):
-        """Modifies direction attibute of goblin based on Champion AI."""
 
 
 class Dungeon(object):
-    """Base class to create, format and print list of lists 'board' on which gameplay takes place."""
+    """Base class to create, format and print board."""
+    board = []
 
     def __init__(self, size):
         self.size = size     
-        self.board = []
         for n in range(self.size):
             self.board.append([colored('O', 'grey', 'on_white')] * self.size)
 
@@ -290,6 +273,7 @@ class Dungeon(object):
         return new_board
 
 
+# Initialise lists of possible goblin names and titles
 names = ['Antonio', 'Elliot', 'Amina', 'Un', 'Ezra', 'Erin', 'Willetta', 'Anisa', 'Zackary', 'Dede', 'Joye',
 'Eric', 'Marybelle', 'Cleveland', 'Hank', 'Ashanti', 'Saturnina', 'Gidget', 'Felicidad', 'Annalee', 'Palmira',
 'Franklin', 'Cristobal', 'Leif', 'Johnny', 'Merrill', 'Deon', 'Freddy', 'Julene', 'Maryln', 'Kattie', 'Chase',
@@ -392,6 +376,7 @@ of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 Press ENTER to start climbing Goblin Tower""".format(player.stats()))
 input()
 while True:
+    # Initialise variables for new floor
     board = Dungeon(10)
     low_health = randint(1, 5)
     med_health = randint(3, 7)
@@ -416,14 +401,15 @@ while True:
     goblin_count = 3
     turn = 1
     while goblin_count > 0:
+        # Player turn
         clear = system('cls')
         player_continue = True
         round_screen = """ROUND {}
 
-PLAYER TURN
+PLAYER TURN - {}
 
 {}
-{}""".format(turn, board.return_board(), player.stats())
+{}""".format(turn, player.role.upper(), board.return_board(), player.stats())
         cprint(round_screen)
         cprint("""
 1. Move
@@ -432,11 +418,12 @@ PLAYER TURN
         while player_continue:
             key = ord(getch())
             if key == 49:
+                # Move
                 while player_continue:
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-Select a direction.""")
+Select a direction with the arrow keys.""")
                     while player_continue:
                         key = ord(getch())
                         if key == 72:
@@ -465,6 +452,7 @@ That move is not valid!""")
                             sleep(3)
                 break
             elif key == 50:
+                # Attack
                 while player_continue:
                     for goblin in goblins:
                         if goblin.adjacent(board, player):
@@ -510,6 +498,7 @@ Select a target.
                         break
                 break
             elif key == 51:
+                # Examine
                 while player_continue:
                     clear = system('cls')
                     cprint(round_screen)
@@ -519,7 +508,7 @@ Select a target.
                     examine_num = 1
                     examine_order = {}
                     for goblin in goblins:
-                        if goblin.status != 'Dead':
+                        if goblin.is_alive():
                             examine_order[examine_num] = goblin
                             cprint('{}. {}'.format(examine_num, goblin.role))
                             examine_num += 1
@@ -549,25 +538,59 @@ Select a target.
                 raise KeyboardInterrupt
         if not player_continue:
             continue
-        #Start of goblin turn
         round_screen = """ROUND {}
 
-GOBLIN TURN
+PLAYER TURN - {}
 
 {}
-{}""".format(turn, board.return_board(), player.stats())
+{}""".format(turn, player.role.upper(), board.return_board(), player.stats())
         clear = system('cls')
         cprint(round_screen)
+        sleep(3)
+        # Goblin turn
         for goblin in goblins:
-            if goblin.adjacent(board, player):
-                # Goblin attacks
-                pass
-            elif goblin.getx(board) == player.getx(board) or goblin.gety(board) == player.gety(board):
-                # Goblin on same row/column as player thus move towards player
-                pass
-            else:
-                # Call unique AI method based on role
-                pass
+            goblin_attack = False
+            if goblin.is_alive():
+                round_screen = """ROUND {}
+
+GOBLIN TURN - {}
+
+{}
+{}""".format(turn, goblin.role.upper(), board.return_board(), player.stats())
+                clear = system('cls')
+                cprint(round_screen)
+                if goblin.adjacent(board, player):
+                    goblin.damage(board, player)
+                    goblin_attack = True
+                    sleep(5)
+                elif goblin.getx(board) == player.getx(board):
+                    if goblin.gety(board) - player.gety(board) == abs(goblin.gety(board) - player.gety(board)):
+                        goblin.direction = 'up'
+                    else:
+                        goblin.direction = 'down'
+                elif goblin.gety(board) == player.gety(board):
+                    if goblin.getx(board) - player.getx(board) == abs(goblin.getx(board) - player.getx(board)):
+                        goblin.direction = 'left'
+                    else:
+                        goblin.direction = 'right'
+                # Check move_valid here first?
+                else:
+                    # Get lengths of the two closest paths to get to same row/column as player
+                    # If override, take longer path and if path lengths are equal, reset override to false
+                    # Else, take shortest, clear path
+                    pass
+                if not goblin_attack:
+                    # Check if move is valid then move
+                    # If not valid, rotate direction by 90 degrees away from other entities until valid and set override to true
+                    pass
+                round_screen = """ROUND {}
+
+GOBLIN TURN - {}
+
+{}
+{}""".format(turn, goblin.role.upper(), board.return_board(), player.stats())
+                clear = system('cls')
+                cprint(round_screen)
+                sleep(3)
         #End of round
         turn += 1
-        exit() #Db
