@@ -549,6 +549,7 @@ Select a target.
                         break
                 break
             elif key == 52:
+                #Teleport
                 while True:
                     clear = system('cls')
                     cprint(round_screen)
