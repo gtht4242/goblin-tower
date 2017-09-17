@@ -26,7 +26,7 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Write proper start and gameloop functions so game can return to start screen on death
 #
 # To improve developer experience:
-#   - Add debug tools (e.g. 'God mode', quick reset of board)
+#   - Add debug tools (e.g. 'God mode' - high life and power, teleportation, quick reset of board)
 
 from msvcrt import getch
 from os import system
@@ -347,20 +347,33 @@ What kind of adventurer are you?
 
 1. Paladin (high health, low power)
 2. Fighter (medium health, medium power)
-3. Rogue (low health, high power)""")
+3. Rogue (low health, high power)
+
+DB:
+
+4. GOD MODE
+5. PLAYER DEATH""")
 while True:
     key = ord(getch())
     if key == 49:
         player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                        "Paladin", colored("P", 'cyan', 'on_white'), 1, 1)
+                        "Paladin", colored("P", "cyan", "on_white"), 1, 1)
         break
     elif key == 50:
         player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", colored("F", 'cyan', 'on_white'), 1, 1)
+                        "Fighter", colored("F", "cyan", "on_white"), 1, 1)
         break
     elif key == 51:
         player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", colored("R", 'cyan', 'on_white'), 1, 1)
+                        "Rogue", colored("R", "cyan", "on_white"), 1, 1)
+        break
+    elif key == 52:
+        player = Player(1000, 1000, 1000, "Ready", name, "For debugging",
+                        "GOD MODE", colored("G", "cyan", "on_white"), 4, 1)
+        break
+    elif key == 53:
+        player = Player(0, 1000, 1000, "Ready", name, "For debugging",
+                        "PLAYER DEATH", colored("D", "cyan", "on_white"), 1, 1)
         break
     elif key == 3:
         raise KeyboardInterrupt
