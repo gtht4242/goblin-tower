@@ -26,7 +26,7 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Write proper start and gameloop functions so game can return to start screen on death
 #
 # To improve developer experience:
-#   - Add debug tools (e.g. 'God mode' - high life and power, teleportation, quick reset of board)
+#   - Add debug tools (e.g. teleportation, quick reset of board)
 
 from msvcrt import getch
 from os import system
@@ -188,6 +188,11 @@ Description: {self.descript}"""
         elif direction == 'right':
             board.board[original_y][original_x + n] = self.sym
         board.board[original_y][original_x] = empty_char
+    
+    def teleport(self, board, x, y):
+        """Removes current entity char on board and spawns it in space referenced by x and y."""
+        self.remove(board)
+        self.spawn(board, x, y)
 
 
 class Player(Entity):
@@ -350,7 +355,6 @@ What kind of adventurer are you?
 3. Rogue (low health, high power)
 
 DB:
-
 4. GOD MODE
 5. PLAYER DEATH""")
 while True:
@@ -422,9 +426,9 @@ PLAYER TURN - {player.role.upper()}
 {player.stats()}"""
         cprint(round_screen)
         cprint("""
-1. Move
-2. Attack
-3. Examine""")
+1. Move             Db:
+2. Attack           4. Teleport
+3. Examine          5. Reset""")
         while player_continue:
             key = ord(getch())
             if key == 49:
@@ -472,13 +476,13 @@ That move is not valid!""")
 There is no one in range!""")
                         sleep(3)
                         player_continue = False
-                    attack_num = 1
-                    attack_order = {}
-                    for goblin in goblins:
-                        if goblin.adjacent(board, player):
-                            attack_order[attack_num] = goblin
-                            attack_num += 1                               
                     if player_continue:
+                        attack_num = 1
+                        attack_order = {}
+                        for goblin in goblins:
+                            if goblin.adjacent(board, player):
+                                attack_order[attack_num] = goblin
+                                attack_num += 1                               
                         clear = system('cls')
                         cprint(round_screen)
                         cprint("""
@@ -544,6 +548,25 @@ Select a target.
                         input()
                         break
                 break
+            elif key == 52:
+                while True:
+                    clear = system('cls')
+                    cprint(round_screen)
+                    destination = input("""
+Enter x and y coordinates of destination separated by a space.
+
+""")
+                    teleport_x = int(destination[0])
+                    teleport_y = int(destination[-1])
+                    destination_char = board.board[teleport_y][teleport_x]
+                    if destination_char == empty_char or destination_char == player.sym:
+                        break
+                    else:
+                        cprint("""
+Destination is non-empty space!""")
+                        sleep(3)
+                player.teleport(board, teleport_x, teleport_y)
+                player_continue = False
             elif key == 3:
                 raise KeyboardInterrupt
         if not player_continue:
