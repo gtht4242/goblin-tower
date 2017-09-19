@@ -586,15 +586,15 @@ Destination is non-empty space!""")
 Press any key to confirm floor reset.""")
                 while True:
                     key = ord(getch())
-                    if key != 27 and key != 3:
-                        init_floor()
-                        player_continue = False
-                        break
-                    elif key == 27:
+                    if key == 27:
                         player_continue = False
                         break
                     elif key == 3:
                         raise KeyboardInterrupt                
+                    else:
+                        init_floor()
+                        player_continue = False
+                        break
             elif key == 3:
                 raise KeyboardInterrupt
         if not player_continue:
