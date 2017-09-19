@@ -549,7 +549,7 @@ Select a target.
                     if player_continue:
                         clear = system('cls')
                         cprint(round_screen)
-                        cprint(examine_order[examine_target].stats())
+                        cprint(examine_order[examine_target].stats() + '\n' * 2 + "Press ENTER to continue.")
                         input()
                         break
                 break
