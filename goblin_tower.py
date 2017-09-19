@@ -40,9 +40,10 @@ from termcolor import colored, cprint
 from vlc import MediaPlayer
 
 colorama.init()
-empty_char = colored('O', 'grey', 'on_white')
+background_colour = "on_white"
 player_colour = "cyan"
 goblin_colour = "red"
+empty_char = colored("O", "grey", background_colour)
 
 def init_floor():
     """Initialise variables for new floor."""
@@ -58,11 +59,14 @@ def init_floor():
     name2 = choice(names) + ' the ' + choice(titles)
     name3 = choice(names) + ' the ' + choice(titles)
     goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
-                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', goblin_colour, 'on_white'))
+                     "A fast and silent killer armed with a dagger", "Assassin",
+                     colored('A', goblin_colour, background_colour))
     goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
-                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', goblin_colour, 'on_white'))
+                     "A skilled swordsman loyal to the Goblin King", "Knight",
+                     colored('K', goblin_colour, background_colour))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
-                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', goblin_colour, 'on_white'))
+                     "A heavily armoured sentinel equipped with a mace", "Champion",
+                     colored('C', goblin_colour, background_colour))
     goblins = (goblin1, goblin2, goblin3)
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
@@ -292,13 +296,13 @@ class Dungeon(object):
     def print_board(self):
         """Print board in formatted, front-end grid form."""
         for row in self.board:
-            cprint(colored(' ', 'grey', 'on_white').join(row))
+            cprint(colored(' ', 'grey', background_colour).join(row))
 
     def return_board(self):
         """Return board in formatted, front-end grid form."""
         new_board = ''
         for i, row in enumerate(self.board):
-            new_board += colored(' ', 'grey', 'on_white').join(row)
+            new_board += colored(' ', 'grey', background_colour).join(row)
             if i < self.size - 1:
                 new_board += '\n'
         return new_board
@@ -390,23 +394,23 @@ while True:
     key = ord(getch())
     if key == 49:
         player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                        "Paladin", colored("P", player_colour, "on_white"), 1, 1)
+                        "Paladin", colored("P", player_colour, background_colour), 1, 1)
         break
     elif key == 50:
         player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", colored("F", player_colour, "on_white"), 1, 1)
+                        "Fighter", colored("F", player_colour, background_colour), 1, 1)
         break
     elif key == 51:
         player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", colored("R", player_colour, "on_white"), 1, 1)
+                        "Rogue", colored("R", player_colour, background_colour), 1, 1)
         break
     elif key == 52:
         player = Player(1000, 1000, 1000, "Ready", name, "For debugging",
-                        "GOD MODE", colored("G", player_colour, "on_white"), 4, 1)
+                        "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
         break
     elif key == 53:
         player = Player(0, 1000, 1000, "Ready", name, "For debugging",
-                        "PLAYER DEATH", colored("D", player_colour, "on_white"), 1, 1)
+                        "PLAYER DEATH", colored("D", player_colour, background_colour), 1, 1)
         break
     elif key == 3:
         raise KeyboardInterrupt
