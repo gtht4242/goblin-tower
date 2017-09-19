@@ -1,7 +1,7 @@
 """Endless turn-based, grid-based, fantasy-themed, strategy game
 
 You must ascend Goblin Tower and reach as high a floor as possible."""
-# TO-DO:
+# TODO
 # Goblin class to handle enemy AI (use direction attribute)
 #   - All goblins attack player if adjacent
 #   - Else if in same row or column and path is clear, move in direction of player
@@ -24,9 +24,10 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Add more ASCII art
 #   - Add "You are the nth adventurer to enter Goblin Tower" message using a text file to store n
 #   - Write proper start and gameloop functions so game can return to start screen on death
+#   - Experiment with Tkinter window and terminal (i.e. larger font size, custom border)
 #
 # To improve developer experience:
-#   - Add debug tools (e.g. teleportation, quick reset of board)
+#   - Add debug tools (e.g. quick reset of board)
 
 from msvcrt import getch
 from os import system
@@ -41,6 +42,33 @@ from vlc import MediaPlayer
 
 colorama.init()
 empty_char = colored('O', 'grey', 'on_white')
+
+def init_floor():
+    """Initialise variables for new floor."""
+    global board, goblin1, goblin2, goblin3, goblins, goblin_count, turn
+    board = Dungeon(10)
+    low_health = randint(1, 5)
+    med_health = randint(3, 7)
+    high_health = randint(5, 9)
+    low_power = randint(1, 2)
+    med_power = randint(3, 4)
+    high_power = randint(5, 6)
+    name1 = choice(names) + ' the ' + choice(titles)
+    name2 = choice(names) + ' the ' + choice(titles)
+    name3 = choice(names) + ' the ' + choice(titles)
+    goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
+                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', 'red', 'on_white'))
+    goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
+                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
+    goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
+                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
+    goblins = (goblin1, goblin2, goblin3)
+    player.rand_spawn(board)
+    goblin1.rand_spawn(board)
+    goblin2.rand_spawn(board)
+    goblin3.rand_spawn(board)
+    goblin_count = 3
+    turn = 1
 
 class Entity(object):
     """Base class for all entities in the game."""
@@ -390,30 +418,7 @@ of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 Press ENTER to start climbing Goblin Tower""")
 input()
 while True:
-    # Initialise variables for new floor
-    board = Dungeon(10)
-    low_health = randint(1, 5)
-    med_health = randint(3, 7)
-    high_health = randint(5, 9)
-    low_power = randint(1, 2)
-    med_power = randint(3, 4)
-    high_power = randint(5, 6)
-    name1 = choice(names) + ' the ' + choice(titles)
-    name2 = choice(names) + ' the ' + choice(titles)
-    name3 = choice(names) + ' the ' + choice(titles)
-    goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
-                     "A fast and silent killer armed with a dagger", "Assassin", colored('A', 'red', 'on_white'))
-    goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
-                     "A skilled swordsman loyal to the Goblin King", "Knight", colored('K', 'red', 'on_white'))
-    goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
-                     "A heavily armoured sentinel equipped with a mace", "Champion", colored('C', 'red', 'on_white'))
-    goblins = (goblin1, goblin2, goblin3)
-    player.rand_spawn(board)
-    goblin1.rand_spawn(board)
-    goblin2.rand_spawn(board)
-    goblin3.rand_spawn(board)
-    goblin_count = 3
-    turn = 1
+    init_floor()
     while goblin_count > 0:
         # Player turn
         clear = system('cls')
