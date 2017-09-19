@@ -281,10 +281,10 @@ class Goblin(Entity):
 
 class Dungeon(object):
     """Base class to create, format and print board."""
-    board = []
 
     def __init__(self, size):
-        self.size = size     
+        self.size = size
+        self.board = []
         for n in range(self.size):
             self.board.append([empty_char] * self.size)
 
@@ -554,7 +554,7 @@ Select a target.
                         break
                 break
             elif key == 52:
-                #Teleport
+                # Teleport
                 while True:
                     clear = system('cls')
                     cprint(round_screen)
@@ -573,6 +573,23 @@ Destination is non-empty space!""")
                         sleep(3)
                 player.teleport(board, teleport_x, teleport_y)
                 player_continue = False
+            elif key == 53:
+                # Reset
+                clear = system('cls')
+                cprint(round_screen)
+                cprint("""
+Press any key to confirm floor reset.""")
+                while True:
+                    key = ord(getch())
+                    if key != 27 and key != 3:
+                        init_floor()
+                        player_continue = False
+                        break
+                    elif key == 27:
+                        player_continue = False
+                        break
+                    elif key == 3:
+                        raise KeyboardInterrupt                
             elif key == 3:
                 raise KeyboardInterrupt
         if not player_continue:
