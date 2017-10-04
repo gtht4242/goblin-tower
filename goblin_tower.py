@@ -2,11 +2,6 @@
 
 You must ascend Goblin Tower and reach as high a floor as possible."""
 # TODO
-# Goblin class to handle enemy AI (use direction attribute)
-#   - All goblins attack player if adjacent
-#   - Else if in same row or column and path is clear, move in direction of player
-#   - Else move towards player, preferably away from other goblins
-#
 # Write Item class to handle:
 #   - Printing/returning inventory (use list_generator.py for numbered list)
 #   - Processing number input into calling item subclass method (or put this in player turn loop instead)
@@ -18,6 +13,7 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Option to load from file at boot up
 # 
 # To improve player experience:
+#   - Print player name in blue and enemy names in red (both with white background)
 #   - Add more context print messages
 #   - Adjust sleep delays
 #   - Add music (Divinity: Orginal Sin?) and SFX (via multiple instances of vlc.MediaPlayer)
@@ -27,6 +23,8 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Experiment with Tkinter window and terminal (i.e. larger font size, custom border)
 #
 # To improve developer experience:
+#   - Allow changing of class through esc from 'start climbing' screen
+#   - Upgrade teleport action to allow for teleporting all entities
 
 from msvcrt import getch
 from os import system
@@ -72,6 +70,8 @@ def init_floor():
     goblin1.rand_spawn(board)
     goblin2.rand_spawn(board)
     goblin3.rand_spawn(board)
+    for goblin in goblins:
+        goblin.reset_destination(board)
     goblin_count = 3
     turn = 1
 
@@ -167,6 +167,27 @@ Description: {self.descript}"""
         if self.gety(board) - 1 > -1:
             self_adjacent.append(board.board[self.gety(board) - 1][self.getx(board)])
         return entity.sym in self_adjacent
+
+    def get_adjacent(self, board):
+        """Return list of adjacent characters (None if empty) starting from the top and going clockwise."""
+        self_adjacent = []
+        if self.gety(board) - 1 > -1:
+            self_adjacent.append(board.board[self.gety(board) - 1][self.getx(board)])
+        else:
+            self_adjacent.append(None)
+        if self.getx(board) + 1 < board.size:
+            self_adjacent.append(board.board[self.gety(board)][self.getx(board) + 1])
+        else:
+            self_adjacent.append(None)
+        if self.gety(board) + 1 < board.size:
+            self_adjacent.append(board.board[self.gety(board) + 1][self.getx(board)])
+        else:
+            self_adjacent.append(None)
+        if self.getx(board) - 1 > -1:
+            self_adjacent.append(board.board[self.gety(board)][self.getx(board) - 1])
+        else:
+            self_adjacent.append(None)
+        return self_adjacent
 
     def spawn(self, board, x, y):
         """Replaces the given space in board with the entity's symbol."""
@@ -280,9 +301,41 @@ LEVEL UP! - Add 1 point to health or power?
 
 
 class Goblin(Entity):
-    """Subclass of Entity for goblin objects including enemy AI move generators."""
+    """Subclass of Entity for goblin objects including enemy AI move generator."""
+    destination_x = None
+    destination_y = None
     direction = ''
+    directions = []
 
+    def set_direction(self, board):
+        """Sets direction of movement based on own position and destination coordinates"""
+        self.directions = []
+        x_distance = self.getx(board) - self.destination_x
+        y_distance = self.gety(board) - self.destination_y
+        if self.gety(board) != self.destination_y:
+            if y_distance == abs(y_distance):
+                self.directions.append('up')
+            else:
+                self.directions.append('down')
+        if self.getx(board) != self.destination_x:
+            if x_distance == abs(x_distance):
+                self.directions.append('left')
+            else:
+                self.directions.append('right')
+        if len(self.directions) == 1:
+            self.direction = self.directions[0]
+        else:
+            if abs(x_distance) > abs(y_distance):
+                self.direction = self.directions[0]
+            elif abs(x_distance) < abs(y_distance):
+                self.direction = self.directions[1]
+            else:
+                self.direction = choice(self.directions)
+    
+    def reset_destination(self, board):
+        """Resets destination coordinates to player coordinates."""
+        self.destination_x = player.getx(board)
+        self.destination_y = player.gety(board)
 
 class Dungeon(object):
     """Base class to create, format and print board."""
@@ -405,11 +458,11 @@ while True:
                         "Rogue", colored("R", player_colour, background_colour), 1, 1)
         break
     elif key == 52:
-        player = Player(1000, 1000, 1000, "Ready", name, "For debugging",
+        player = Player(10000, 10000, 1000, "Ready", name, "For debugging",
                         "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
         break
     elif key == 53:
-        player = Player(0, 1000, 1000, "Ready", name, "For debugging",
+        player = Player(0, 10000, 1000, "Ready", name, "For debugging",
                         "PLAYER DEATH", colored("D", player_colour, background_colour), 1, 1)
         break
     elif key == 3:
@@ -469,6 +522,8 @@ Select a direction with the arrow keys.""")
                     if player_continue:
                         if player.move_valid(board, direction, 1):
                             player.move(board, direction, 1)
+                            for goblin in goblins:
+                                goblin.reset_destination(board)
                             break
                         else:
                             cprint("""
@@ -559,27 +614,61 @@ Select a target.
                         break
                 break
             elif key == 52:
-                # Teleport
+                # Teleport - Db
+                clear = system('cls')
+                cprint(round_screen)
+                cprint("""
+Choose target.
+
+1. Player
+2. Assassin
+3. Knight
+4. Champion""")
                 while True:
-                    clear = system('cls')
-                    cprint(round_screen)
-                    destination = input("""
+                    key = ord(getch())
+                    if key == 49:
+                        target = player
+                        break
+                    elif key == 50:
+                        target = goblin1
+                        break
+                    elif key == 51:
+                        target = goblin2
+                        break
+                    elif key == 52:
+                        target = goblin3
+                        break
+                    elif key == 27:
+                        player_continue = False
+                        break
+                    elif key == 3:
+                        raise KeyboardInterrupt
+                if player_continue:
+                    while True:
+                        destination = input(f"""
+x = {target.getx(board)}
+y = {target.gety(board)}
+
 Enter x and y coordinates of destination separated by a space.
 
 """)
-                    teleport_x = int(destination[0])
-                    teleport_y = int(destination[-1])
-                    destination_char = board.board[teleport_y][teleport_x]
-                    if destination_char == empty_char or destination_char == player.sym:
-                        break
-                    else:
-                        cprint("""
+                        teleport_x = int(destination[0])
+                        teleport_y = int(destination[-1])
+                        destination_char = board.board[teleport_y][teleport_x]
+                        if destination_char == empty_char or target == player and destination_char == player.sym:
+                            break
+                        else:
+                            cprint("""
 Destination is non-empty space!""")
-                        sleep(3)
-                player.teleport(board, teleport_x, teleport_y)
-                player_continue = False
+                    target.teleport(board, teleport_x, teleport_y)
+                    if target == player:
+                        for goblin in goblins:
+                            goblin.reset_destination(board)
+                    else:
+                        target.reset_destination(board)
+                    player_continue = False
             elif key == 53:
-                # Reset
+                # Reset - Db
                 clear = system('cls')
                 cprint(round_screen)
                 cprint("""
@@ -610,46 +699,71 @@ PLAYER TURN - {player.role.upper()}
         sleep(3)
         # Goblin turn
         for goblin in goblins:
-            goblin_attack = False
             if goblin.is_alive():
                 round_screen = f"""ROUND {turn}
 
 GOBLIN TURN - {goblin.role.upper()}
 
 {board.return_board()}
-{player.stats()}"""
+{player.stats()}
+
+Db:
+destination_x = {goblin.destination_x}
+destination_y = {goblin.destination_y}"""
                 clear = system('cls')
                 cprint(round_screen)
                 if goblin.adjacent(board, player):
+                    # Attack
+                    goblin.reset_destination(board)
                     goblin.damage(board, player)
-                    goblin_attack = True
                     sleep(5)
-                elif goblin.getx(board) == player.getx(board):
-                    if goblin.gety(board) - player.gety(board) == abs(goblin.gety(board) - player.gety(board)):
-                        goblin.direction = 'up'
-                    else:
-                        goblin.direction = 'down'
-                elif goblin.gety(board) == player.gety(board):
-                    if goblin.getx(board) - player.getx(board) == abs(goblin.getx(board) - player.getx(board)):
-                        goblin.direction = 'left'
-                    else:
-                        goblin.direction = 'right'
-                # Check move_valid here first?
                 else:
-                    # Get lengths of the two closest paths to get to same row/column as player
-                    # If override, take longer path and if path lengths are equal, reset override to false
-                    # Else, take shortest, clear path
-                    pass
-                if not goblin_attack:
-                    # Check if move is valid then move
-                    # If not valid, rotate direction by 90 degrees away from other entities until valid and set override to true
-                    pass
+                    # Move
+                    block_num = 0
+                    if goblin.getx(board) == goblin.destination_x and goblin.gety(board) == goblin.destination_y:
+                        goblin.reset_destination(board)
+                    while True:
+                        if block_num > 3:
+                            goblin.reset_destination(board)
+                            break
+                        goblin.set_direction(board)
+                        if goblin.move_valid(board, goblin.direction, 1):
+                            goblin.move(board, goblin.direction, 1)
+                            break
+                        else:
+                            goblin.reset_destination(board)
+                            if block_num == 1:
+                                if goblin.direction == 'up' or goblin.direction == 'down':
+                                    goblin.destination_y = player.gety(board) - 1
+                                elif goblin.direction == 'left' or goblin.direction == 'right':
+                                    goblin.destination_x = player.getx(board) - 1
+                            elif block_num == 2:
+                                if goblin.direction == 'up' or goblin.direction == 'down':
+                                    goblin.destination_y = player.gety(board) + 1
+                                elif goblin.direction == 'left' or goblin.direction == 'right':
+                                    goblin.destination_x = player.getx(board) + 1
+                            else:
+                                if goblin.direction == 'up' or goblin.direction == 'down':
+                                    if player.get_adjacent(board)[3] == empty_char:
+                                        goblin.destination_x = player.getx(board) - 1
+                                    elif player.get_adjacent(board)[1] == empty_char:
+                                        goblin.destination_x = player.getx(board) + 1
+                                elif goblin.direction == 'left' or goblin.direction == 'right':
+                                    if player.get_adjacent(board)[0] == empty_char:
+                                        goblin.destination_y = player.gety(board) - 1
+                                    elif player.get_adjacent(board)[2] == empty_char:
+                                        goblin.destination_y = player.gety(board) + 1
+                            block_num += 1
                 round_screen = f"""ROUND {turn}
 
 GOBLIN TURN - {goblin.role.upper()}
 
 {board.return_board()}
-{player.stats()}"""
+{player.stats()}
+
+Db:
+destination_x = {goblin.destination_x}
+destination_y = {goblin.destination_y}"""
                 clear = system('cls')
                 cprint(round_screen)
                 sleep(3)
