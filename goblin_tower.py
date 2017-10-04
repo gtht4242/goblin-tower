@@ -769,3 +769,8 @@ destination_y = {goblin.destination_y}"""
                 sleep(3)
         #End of round
         turn += 1
+    else:
+        cprint("""
+FLOOR UP!""")
+        player.floor += 1
+        sleep(3)
