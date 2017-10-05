@@ -24,7 +24,6 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #
 # To improve developer experience:
 #   - Allow changing of class through esc from 'start climbing' screen
-#   - Upgrade teleport action to allow for teleporting all entities
 
 from msvcrt import getch
 from os import system
@@ -42,6 +41,8 @@ background_colour = "on_white"
 player_colour = "cyan"
 goblin_colour = "red"
 empty_char = colored("O", "grey", background_colour)
+class_continue = True
+player_continue = True
 
 def init_floor():
     """Initialise variables for new floor."""
@@ -428,8 +429,10 @@ name = profanity.censor(input("""Hello adventurer!
 
 What is your name?
 """))
-clear = system('cls')
-cprint("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
+while True:
+    class_continue = True
+    clear = system('cls')
+    cprint("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
 lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
 run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
 take shelter in the tower.
@@ -443,44 +446,58 @@ What kind of adventurer are you?
 DB:
 4. GOD MODE
 5. PLAYER DEATH""")
-while True:
-    key = ord(getch())
-    if key == 49:
-        player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                        "Paladin", colored("P", player_colour, background_colour), 1, 1)
-        break
-    elif key == 50:
-        player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                        "Fighter", colored("F", player_colour, background_colour), 1, 1)
-        break
-    elif key == 51:
-        player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                        "Rogue", colored("R", player_colour, background_colour), 1, 1)
-        break
-    elif key == 52:
-        player = Player(10000, 10000, 1000, "Ready", name, "For debugging",
-                        "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
-        break
-    elif key == 53:
-        player = Player(0, 10000, 1000, "Ready", name, "For debugging",
-                        "PLAYER DEATH", colored("D", player_colour, background_colour), 1, 1)
-        break
-    elif key == 3:
-        raise KeyboardInterrupt
-clear = system('cls')
-cprint(f"""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
+    while True:
+        key = ord(getch())
+        if key == 49:
+            player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
+                            "Paladin", colored("P", player_colour, background_colour), 1, 1)
+            break
+        elif key == 50:
+            player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
+                            "Fighter", colored("F", player_colour, background_colour), 1, 1)
+            break
+        elif key == 51:
+            player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
+                            "Rogue", colored("R", player_colour, background_colour), 1, 1)
+            break
+        elif key == 52:
+            player = Player(10000, 10000, 1000, "Ready", name, "For debugging",
+                            "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
+            break
+        elif key == 53:
+            player = Player(0, 10000, 1000, "Ready", name, "For debugging",
+                            "PLAYER DEATH", colored("D", player_colour, background_colour), 1, 1)
+            break
+        elif key == 3:
+            raise KeyboardInterrupt
+    clear = system('cls')
+    cprint(f"""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
 magical force. A shrill cackle fills the air as you scan your surroundings. As the first goblins step out
 of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
 {player.stats()}
 
-Press ENTER to start climbing Goblin Tower""")
-input()
+Press ENTER to start climbing Goblin Tower
+
+(or press ESC to return to class selection screen)""")
+    while True:
+        key = ord(getch())
+        if key == 13:
+            break
+        elif key == 27:
+            class_continue = False
+            break
+        elif key == 3:
+            raise KeyboardInterrupt
+    if not class_continue:
+        continue
+    else:
+        break
 while True:
     init_floor()
     while goblin_count > 0:
         # Player turn
-        clear = system('cls')
         player_continue = True
+        clear = system('cls')
         round_screen = f"""ROUND {turn}
 
 PLAYER TURN - {player.role.upper()}
@@ -500,7 +517,7 @@ PLAYER TURN - {player.role.upper()}
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-Select a direction with the arrow keys.""")
+Select a direction with the ARROW KEYS. (ESC to go back)""")
                     while player_continue:
                         key = ord(getch())
                         if key == 72:
@@ -551,7 +568,7 @@ There is no one in range!""")
                         clear = system('cls')
                         cprint(round_screen)
                         cprint("""
-Select a target.
+Select a target with the NUMBER KEYS. (ESC to go back)
 """)
                         for enemy in attack_order:
                             cprint(f'{enemy}. {attack_order[enemy].role}')
@@ -570,11 +587,11 @@ Select a target.
                                 player_continue = False
                             elif key == 3:
                                 raise KeyboardInterrupt
-                        clear = system('cls')
-                        cprint(round_screen)
-                        player.damage(board, attack_order[attack_target])
-                        sleep(5)
-                        break
+                        if player_continue:
+                            clear = system('cls')
+                            cprint(round_screen)
+                            player.damage(board, attack_order[attack_target])
+                            sleep(5)
                 break
             elif key == 51:
                 # Examine
@@ -582,7 +599,7 @@ Select a target.
                     clear = system('cls')
                     cprint(round_screen)
                     cprint("""
-Select a target.
+Select a target with the NUMBER KEYS. (ESC to go back)
 """)
                     examine_num = 1
                     examine_order = {}
