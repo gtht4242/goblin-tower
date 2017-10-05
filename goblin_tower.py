@@ -23,7 +23,6 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Experiment with Tkinter window and terminal (i.e. larger font size, custom border)
 #
 # To improve developer experience:
-#   - Allow changing of class through esc from 'start climbing' screen
 
 from itertools import count
 from msvcrt import getch
@@ -118,12 +117,14 @@ class Entity(object):
             cprint("""
 You died! - GAME OVER""")
             sleep(3)
+            clear = system('cls')
             with open("text/hall_of_fame.txt", "a") as hall:
                 hall.write(player.stats() + '\n')
             with open("text/hall_of_fame.txt", "r") as hall:
-                cprint(f"""
-HALL OF FAME
-{hall.read()}""")
+                cprint(f"""HALL OF FAME
+{hall.read()}
+*******************
+""")
             input("Press ENTER to quit")
             exit()
         elif target.status == "Dead":
@@ -473,7 +474,7 @@ DB:
                             "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
             break
         elif key == 53:
-            player = Player(0, 10000, 1000, "Ready", name, "For debugging",
+            player = Player(0, 10000, 0, "Ready", name, "For debugging",
                             "PLAYER DEATH", colored("D", player_colour, background_colour), 0, 1)
             break
         elif key == 3:
