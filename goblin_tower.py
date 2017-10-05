@@ -25,6 +25,7 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 # To improve developer experience:
 #   - Allow changing of class through esc from 'start climbing' screen
 
+from itertools import count
 from msvcrt import getch
 from os import system
 from random import choice, randint
@@ -43,6 +44,12 @@ goblin_colour = "red"
 empty_char = colored("O", "grey", background_colour)
 class_continue = True
 player_continue = True
+
+def round_up(n, round_to):
+    """Rounds n up to nearest multiple of round_to (including if already multiple)."""
+    for n in count(n + 1):
+        if n % round_to == 0 and not n < 0:
+            return n
 
 def init_floor():
     """Initialise variables for new floor."""
@@ -252,9 +259,9 @@ Description: {self.descript}"""
 
 class Player(Entity):
     """Subclass of Entity for player object including unique stats formatter and level up sequence."""
-    exp = 0
+    level = 1
 
-    def __init__(self, health, max_health, power, status, name, descript, role, sym, level, floor):
+    def __init__(self, health, max_health, power, status, name, descript, role, sym, exp, floor):
         self.health = health
         self.max_health = max_health
         self.power = power
@@ -263,16 +270,17 @@ class Player(Entity):
         self.descript = descript
         self.role = role
         self.sym = sym
-        self.level = level
+        self.exp = exp
         self.floor = floor
 
     def stats(self):
         """Return formatted stats for player character."""
         return f"""
-Name: {self.name}
-Level: {self.level}
-Class: {self.role}
 Floor: {self.floor}
+Name: {self.name}
+Class: {self.role}
+Level: {self.level}
+Exp. points: {self.exp}/{round_up(self.exp, 5)}
 Health: {self.health}/{self.max_health}
 Power: {self.power}
 Status: {self.status}
@@ -450,15 +458,15 @@ DB:
         key = ord(getch())
         if key == 49:
             player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                            "Paladin", colored("P", player_colour, background_colour), 1, 1)
+                            "Paladin", colored("P", player_colour, background_colour), 0, 1)
             break
         elif key == 50:
             player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                            "Fighter", colored("F", player_colour, background_colour), 1, 1)
+                            "Fighter", colored("F", player_colour, background_colour), 0, 1)
             break
         elif key == 51:
             player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                            "Rogue", colored("R", player_colour, background_colour), 1, 1)
+                            "Rogue", colored("R", player_colour, background_colour), 0, 1)
             break
         elif key == 52:
             player = Player(10000, 10000, 1000, "Ready", name, "For debugging",
@@ -466,7 +474,7 @@ DB:
             break
         elif key == 53:
             player = Player(0, 10000, 1000, "Ready", name, "For debugging",
-                            "PLAYER DEATH", colored("D", player_colour, background_colour), 1, 1)
+                            "PLAYER DEATH", colored("D", player_colour, background_colour), 0, 1)
             break
         elif key == 3:
             raise KeyboardInterrupt
@@ -592,6 +600,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                             cprint(round_screen)
                             player.damage(board, attack_order[attack_target])
                             sleep(5)
+                            break
                 break
             elif key == 51:
                 # Examine
