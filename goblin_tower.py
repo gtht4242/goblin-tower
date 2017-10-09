@@ -2,6 +2,12 @@
 
 You must ascend Goblin Tower and reach as high a floor as possible."""
 # TODO
+# Implement graphics and music/sfx via pygame:
+#   - Test if msvcrt still works, if not, rewrite input (1.e. detect keyboard snippets) to use pygame keyboard/mouse input
+#   - Rewrite output to read board list and convert to grid of 2D images
+#   - Display appropriate text (e.g stats)
+#   - Configure window icon and caption
+#
 # Write Item class to handle:
 #   - Printing/returning inventory (use list_generator.py for numbered list)
 #   - Processing number input into calling item subclass method (or put this in player turn loop instead)
@@ -16,11 +22,9 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #   - Print player name in blue and enemy names in red (both with white background)
 #   - Add more context print messages
 #   - Adjust sleep delays
-#   - Add music (Divinity: Orginal Sin?) and SFX (via multiple instances of vlc.MediaPlayer)
 #   - Add more ASCII art
 #   - Add "You are the nth adventurer to enter Goblin Tower" message using a text file to store n
 #   - Write proper start and gameloop functions so game can return to start screen on death
-#   - Experiment with Tkinter window and terminal (i.e. larger font size, custom border)
 #
 # To improve developer experience:
 
@@ -34,13 +38,14 @@ from time import sleep
 import colorama
 from profanity import profanity
 from termcolor import colored, cprint
-from vlc import MediaPlayer
 
 colorama.init()
-background_colour = "on_white"
-player_colour = "cyan"
-goblin_colour = "red"
-empty_char = colored("O", "grey", background_colour)
+
+BACKGROUND_COLOUR = "on_white"
+PLAYER_COLOUR = "cyan"
+GOBLIN_COLOUR = "red"
+EMPTY_CHAR = colored("O", "grey", BACKGROUND_COLOUR)
+
 class_continue = True
 player_continue = True
 
@@ -65,13 +70,13 @@ def init_floor():
     name3 = choice(names) + ' the ' + choice(titles)
     goblin1 = Goblin(low_health, low_health, high_power, "Ready", name1,
                      "A fast and silent killer armed with a dagger", "Assassin",
-                     colored('A', goblin_colour, background_colour))
+                     colored('A', GOBLIN_COLOUR, BACKGROUND_COLOUR))
     goblin2 = Goblin(med_health, med_health, med_power, "Ready", name2,
                      "A skilled swordsman loyal to the Goblin King", "Knight",
-                     colored('K', goblin_colour, background_colour))
+                     colored('K', GOBLIN_COLOUR, BACKGROUND_COLOUR))
     goblin3 = Goblin(high_health, high_health, low_power, "Ready", name3,
                      "A heavily armoured sentinel equipped with a mace", "Champion",
-                     colored('C', goblin_colour, background_colour))
+                     colored('C', GOBLIN_COLOUR, BACKGROUND_COLOUR))
     goblins = (goblin1, goblin2, goblin3)
     player.rand_spawn(board)
     goblin1.rand_spawn(board)
@@ -207,13 +212,13 @@ Description: {self.descript}"""
         while True:
             x = randint(0, board.size - 1)
             y = randint(0, board.size - 1)
-            if board.board[y][x] == empty_char:
+            if board.board[y][x] == EMPTY_CHAR:
                 board.board[y][x] = self.sym
                 break
 
     def remove(self, board):
         """Replaces the entity in the board with 'O'."""
-        board.board[self.gety(board)][self.getx(board)] = empty_char
+        board.board[self.gety(board)][self.getx(board)] = EMPTY_CHAR
 
     def move_valid(self, board, direction, n):
         """If move is valid return True. else False."""
@@ -224,7 +229,7 @@ Description: {self.descript}"""
                 y -= n
             elif direction == 'left':
                 x -= n
-            if x < 0 or y < 0 or board.board[y][x] != empty_char:
+            if x < 0 or y < 0 or board.board[y][x] != EMPTY_CHAR:
                 return False
             else:
                 return True
@@ -233,7 +238,7 @@ Description: {self.descript}"""
                 y += n
             elif direction == 'right':
                 x += n
-            if x >= board.size or y >= board.size or board.board[y][x] != empty_char:
+            if x >= board.size or y >= board.size or board.board[y][x] != EMPTY_CHAR:
                 return False
             else:
                 return True
@@ -250,7 +255,7 @@ Description: {self.descript}"""
             board.board[original_y][original_x - n] = self.sym
         elif direction == 'right':
             board.board[original_y][original_x + n] = self.sym
-        board.board[original_y][original_x] = empty_char
+        board.board[original_y][original_x] = EMPTY_CHAR
     
     def teleport(self, board, x, y):
         """Removes current entity char on board and spawns it in space referenced by x and y."""
@@ -354,18 +359,18 @@ class Dungeon(object):
         self.size = size
         self.board = []
         for n in range(self.size):
-            self.board.append([empty_char] * self.size)
+            self.board.append([EMPTY_CHAR] * self.size)
 
     def print_board(self):
         """Print board in formatted, front-end grid form."""
         for row in self.board:
-            cprint(colored(' ', 'grey', background_colour).join(row))
+            cprint(colored(' ', 'grey', BACKGROUND_COLOUR).join(row))
 
     def return_board(self):
         """Return board in formatted, front-end grid form."""
         new_board = ''
         for i, row in enumerate(self.board):
-            new_board += colored(' ', 'grey', background_colour).join(row)
+            new_board += colored(' ', 'grey', BACKGROUND_COLOUR).join(row)
             if i < self.size - 1:
                 new_board += '\n'
         return new_board
@@ -459,23 +464,23 @@ DB:
         key = ord(getch())
         if key == 49:
             player = Player(20, 20, 2, "Ready", name, "A noble warrior loyal to his faith and clergy",
-                            "Paladin", colored("P", player_colour, background_colour), 0, 1)
+                            "Paladin", colored("P", PLAYER_COLOUR, BACKGROUND_COLOUR), 0, 1)
             break
         elif key == 50:
             player = Player(15, 15, 4, "Ready", name, "A master of the martial arts from young",
-                            "Fighter", colored("F", player_colour, background_colour), 0, 1)
+                            "Fighter", colored("F", PLAYER_COLOUR, BACKGROUND_COLOUR), 0, 1)
             break
         elif key == 51:
             player = Player(10, 10, 6, "Ready", name, "A cunning lone wolf thief who trusts no one",
-                            "Rogue", colored("R", player_colour, background_colour), 0, 1)
+                            "Rogue", colored("R", PLAYER_COLOUR, BACKGROUND_COLOUR), 0, 1)
             break
         elif key == 52:
             player = Player(10000, 10000, 1000, "Ready", name, "For debugging",
-                            "GOD MODE", colored("G", player_colour, background_colour), 4, 1)
+                            "GOD MODE", colored("G", PLAYER_COLOUR, BACKGROUND_COLOUR), 4, 1)
             break
         elif key == 53:
             player = Player(0, 10000, 0, "Ready", name, "For debugging",
-                            "PLAYER DEATH", colored("D", player_colour, background_colour), 0, 1)
+                            "PLAYER DEATH", colored("D", PLAYER_COLOUR, BACKGROUND_COLOUR), 0, 1)
             break
         elif key == 3:
             raise KeyboardInterrupt
@@ -682,7 +687,7 @@ Enter x and y coordinates of destination separated by a space.
                         teleport_x = int(destination[0])
                         teleport_y = int(destination[-1])
                         destination_char = board.board[teleport_y][teleport_x]
-                        if destination_char == empty_char or target == player and destination_char == player.sym:
+                        if destination_char == EMPTY_CHAR or target == player and destination_char == player.sym:
                             break
                         else:
                             cprint("""
@@ -771,14 +776,14 @@ destination_y = {goblin.destination_y}"""
                                     goblin.destination_x = player.getx(board) + 1
                             else:
                                 if goblin.direction == 'up' or goblin.direction == 'down':
-                                    if player.get_adjacent(board)[3] == empty_char:
+                                    if player.get_adjacent(board)[3] == EMPTY_CHAR:
                                         goblin.destination_x = player.getx(board) - 1
-                                    elif player.get_adjacent(board)[1] == empty_char:
+                                    elif player.get_adjacent(board)[1] == EMPTY_CHAR:
                                         goblin.destination_x = player.getx(board) + 1
                                 elif goblin.direction == 'left' or goblin.direction == 'right':
-                                    if player.get_adjacent(board)[0] == empty_char:
+                                    if player.get_adjacent(board)[0] == EMPTY_CHAR:
                                         goblin.destination_y = player.gety(board) - 1
-                                    elif player.get_adjacent(board)[2] == empty_char:
+                                    elif player.get_adjacent(board)[2] == EMPTY_CHAR:
                                         goblin.destination_y = player.gety(board) + 1
                             block_num += 1
                 round_screen = f"""ROUND {turn}
