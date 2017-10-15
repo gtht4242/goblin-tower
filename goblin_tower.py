@@ -28,15 +28,17 @@ You must ascend Goblin Tower and reach as high a floor as possible."""
 #
 # To improve developer experience:
 
+import os
 from itertools import count
 from msvcrt import getch
-from os import system
 from random import choice, randint
 from sys import exit
 from time import sleep
 
 import colorama
+import pygame
 from profanity import profanity
+from pygame.locals import *
 from termcolor import colored, cprint
 
 colorama.init()
@@ -122,7 +124,7 @@ class Entity(object):
             cprint("""
 You died! - GAME OVER""")
             sleep(3)
-            clear = system('cls')
+            clear = os.system('cls')
             with open("text/hall_of_fame.txt", "a") as hall:
                 hall.write(player.stats() + '\n')
             with open("text/hall_of_fame.txt", "r") as hall:
@@ -417,7 +419,7 @@ titles = ["Able", "Accepting", "Adventurous", "Aggressive", "Ambitious", "Annoyi
 "Thoughtful", "Thrilling", "Timid", "Tireless", "Tolerant", "Tough", "Tricky", "Trusting", "Ugly",
 "Understanding", "Unhappy", "Unique", "Unlucky", "Unselfish", "Vain", "Warm", "Wild", "Willing",
 "Wise", "Witty"]
-clear = system('cls')
+clear = os.system('cls')
 cprint(r"""
    ____          __    _  __        __    _____                           ___  ___ _______
   / __/__ ____ _/ /__ / |/ /__ ___ / /_  / ___/__ ___ _  ___ ___   ____  |_  |/ _ <  /_  /
@@ -438,14 +440,14 @@ cprint(r"""
 
 Press ENTER to start""")
 input()
-clear = system('cls')
+clear = os.system('cls')
 name = profanity.censor(input("""Hello adventurer!
 
 What is your name?
 """))
 while True:
     class_continue = True
-    clear = system('cls')
+    clear = os.system('cls')
     cprint("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
 lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
 run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
@@ -484,7 +486,7 @@ DB:
             break
         elif key == 3:
             raise KeyboardInterrupt
-    clear = system('cls')
+    clear = os.system('cls')
     cprint(f"""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
 magical force. A shrill cackle fills the air as you scan your surroundings. As the first goblins step out
 of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
@@ -511,7 +513,7 @@ while True:
     while goblin_count > 0:
         # Player turn
         player_continue = True
-        clear = system('cls')
+        clear = os.system('cls')
         round_screen = f"""ROUND {turn}
 
 PLAYER TURN - {player.role.upper()}
@@ -528,7 +530,7 @@ PLAYER TURN - {player.role.upper()}
             if key == 49:
                 # Move
                 while player_continue:
-                    clear = system('cls')
+                    clear = os.system('cls')
                     cprint(round_screen)
                     cprint("""
 Select a direction with the ARROW KEYS. (ESC to go back)""")
@@ -579,7 +581,7 @@ There is no one in range!""")
                             if goblin.adjacent(board, player):
                                 attack_order[attack_num] = goblin
                                 attack_num += 1                               
-                        clear = system('cls')
+                        clear = os.system('cls')
                         cprint(round_screen)
                         cprint("""
 Select a target with the NUMBER KEYS. (ESC to go back)
@@ -602,7 +604,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                             elif key == 3:
                                 raise KeyboardInterrupt
                         if player_continue:
-                            clear = system('cls')
+                            clear = os.system('cls')
                             cprint(round_screen)
                             player.damage(board, attack_order[attack_target])
                             sleep(5)
@@ -611,7 +613,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
             elif key == 51:
                 # Examine
                 while player_continue:
-                    clear = system('cls')
+                    clear = os.system('cls')
                     cprint(round_screen)
                     cprint("""
 Select a target with the NUMBER KEYS. (ESC to go back)
@@ -639,7 +641,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                         elif key == 3:
                             raise KeyboardInterrupt
                     if player_continue:
-                        clear = system('cls')
+                        clear = os.system('cls')
                         cprint(round_screen)
                         cprint(examine_order[examine_target].stats() + '\n' * 2 + "Press ENTER to continue.")
                         input()
@@ -647,7 +649,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                 break
             elif key == 52:
                 # Teleport - Db
-                clear = system('cls')
+                clear = os.system('cls')
                 cprint(round_screen)
                 cprint("""
 Choose target.
@@ -701,7 +703,7 @@ Destination is non-empty space!""")
                     player_continue = False
             elif key == 53:
                 # Reset - Db
-                clear = system('cls')
+                clear = os.system('cls')
                 cprint(round_screen)
                 cprint("""
 Press any key to confirm floor reset.""")
@@ -726,7 +728,7 @@ PLAYER TURN - {player.role.upper()}
 
 {board.return_board()}
 {player.stats()}"""
-        clear = system('cls')
+        clear = os.system('cls')
         cprint(round_screen)
         sleep(3)
         # Goblin turn
@@ -742,7 +744,7 @@ GOBLIN TURN - {goblin.role.upper()}
 Db:
 destination_x = {goblin.destination_x}
 destination_y = {goblin.destination_y}"""
-                clear = system('cls')
+                clear = os.system('cls')
                 cprint(round_screen)
                 if goblin.adjacent(board, player):
                     # Attack
@@ -796,7 +798,7 @@ GOBLIN TURN - {goblin.role.upper()}
 Db:
 destination_x = {goblin.destination_x}
 destination_y = {goblin.destination_y}"""
-                clear = system('cls')
+                clear = os.system('cls')
                 cprint(round_screen)
                 sleep(3)
         #End of round
