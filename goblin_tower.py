@@ -739,11 +739,7 @@ PLAYER TURN - {player.role.upper()}
 GOBLIN TURN - {goblin.role.upper()}
 
 {board.return_board()}
-{player.stats()}
-
-Db:
-destination_x = {goblin.destination_x}
-destination_y = {goblin.destination_y}"""
+{player.stats()}"""
                 clear = os.system('cls')
                 cprint(round_screen)
                 if goblin.adjacent(board, player):
@@ -793,11 +789,7 @@ destination_y = {goblin.destination_y}"""
 GOBLIN TURN - {goblin.role.upper()}
 
 {board.return_board()}
-{player.stats()}
-
-Db:
-destination_x = {goblin.destination_x}
-destination_y = {goblin.destination_y}"""
+{player.stats()}"""
                 clear = os.system('cls')
                 cprint(round_screen)
                 sleep(3)
