@@ -1,7 +1,13 @@
 # Goblin Tower
-A fantasy dungeon-crawling adventure game developed for Windows installations of Python 3
+A fantasy dungeon-crawling adventure game developed on Python 3
 
-## Requirements
+## Dependencies
+Goblin Tower (Pygame)
+- Profanity Python lib https://pypi.python.org/pypi/profanity/1.1
+- Pygame 1.9.3 http://www.pygame.org/download.shtml
+- Python 3x https://www.python.org/downloads/
+
+Goblin Tower (Text)
 - VLC media player http://www.videolan.org/vlc/index.html
 - VLC Python lib https://pypi.python.org/pypi/python-vlc/
 - Profanity Python lib https://pypi.python.org/pypi/profanity/1.1
