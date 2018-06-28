@@ -439,14 +439,14 @@ cprint(r"""
 
 Press ENTER to start""")
 input()
-
+clear = system('clear')
 name = profanity.censor(input("""Hello adventurer!
 
 What is your name?
 """))
 while True:
     class_continue = True
-    
+    clear = system('clear')    
     cprint("""One fateful night, you find yourself lost in the deep forests of Yaagnok during a violent
 lightning storm. You are at least a day from town and are quickly running out of supplies. You spot a old, 
 run-down tower through a clearing in the trees. The storm picks up and you are left with no choice but to
@@ -485,7 +485,7 @@ DB:
             break
         elif key == 3:
             raise KeyboardInterrupt
-    
+    clear = system('clear')
     cprint("""As soon as you step inside, the rusty iron door slams shut behind you, as if pushed by some
 magical force. A shrill cackle fills the air as you scan your surroundings. As the first goblins step out
 of the darkness, you ready your weapon, unaware of the dangers that lie ahead.
@@ -512,7 +512,7 @@ while True:
     while goblin_count > 0:
         # Player turn
         player_continue = True
-        
+        clear = system('clear')
         round_screen = """ROUND {}
 
 PLAYER TURN - {}
@@ -529,7 +529,7 @@ PLAYER TURN - {}
             if key == 49:
                 # Move
                 while player_continue:
-                    
+                    clear = system('clear')
                     cprint(round_screen)
                     cprint("""
 Select a direction with the WASD KEYS. (ESC to go back)""")
@@ -580,7 +580,7 @@ There is no one in range!""")
                             if goblin.adjacent(board, player):
                                 attack_order[attack_num] = goblin
                                 attack_num += 1                               
-                        
+                        clear = system('clear')
                         cprint(round_screen)
                         cprint("""
 Select a target with the NUMBER KEYS. (ESC to go back)
@@ -603,7 +603,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                             elif key == 3:
                                 raise KeyboardInterrupt
                         if player_continue:
-                            
+                            clear = system('clear')
                             cprint(round_screen)
                             player.damage(board, attack_order[attack_target])
                             sleep(5)
@@ -612,7 +612,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
             elif key == 51:
                 # Examine
                 while player_continue:
-                    
+                    clear = system('clear')
                     cprint(round_screen)
                     cprint("""
 Select a target with the NUMBER KEYS. (ESC to go back)
@@ -640,7 +640,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                         elif key == 3:
                             raise KeyboardInterrupt
                     if player_continue:
-                        
+                        clear = system('clear')
                         cprint(round_screen)
                         cprint(examine_order[examine_target].stats() + '\n' * 2 + "Press ENTER to continue.")
                         input()
@@ -648,7 +648,7 @@ Select a target with the NUMBER KEYS. (ESC to go back)
                 break
             elif key == 52:
                 # Teleport - Db
-                
+                clear = system('clear')
                 cprint(round_screen)
                 cprint("""
 Choose target.
@@ -702,7 +702,7 @@ Destination is non-empty space!""")
                     player_continue = False
             elif key == 53:
                 # Reset - Db
-                
+                clear = system('clear')
                 cprint(round_screen)
                 cprint("""
 Press any key to confirm floor reset.""")
@@ -727,7 +727,7 @@ PLAYER TURN - {}
 
 {}
 {}""".format(turn, player.role.upper(), board.return_board(), player.stats())
-        
+        clear = system('clear')
         cprint(round_screen)
         sleep(3)
         # Goblin turn
@@ -743,7 +743,7 @@ GOBLIN TURN - {}
 Db:
 destination_x = {}
 destination_y = {}""".format(turn, goblin.role.upper(), board.return_board(), player.stats(), goblin.destination_x, goblin.destination_y)
-                
+                clear = system('clear')
                 cprint(round_screen)
                 if goblin.adjacent(board, player):
                     # Attack
@@ -797,7 +797,7 @@ GOBLIN TURN - {}
 Db:
 destination_x = {}
 destination_y = {}""".format(turn, goblin.role.upper(), board.return_board(), player.stats(), goblin.destination_x, goblin.destination_y)
-                
+                clear = system('clear')
                 cprint(round_screen)
                 sleep(3)
         #End of round
