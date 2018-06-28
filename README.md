@@ -1,13 +1,18 @@
 # Goblin Tower
 A fantasy dungeon-crawling adventure game developed on Python 3
 
-## Dependencies
-Goblin Tower (Pygame)
+## Requirements
+All versions
 - Profanity Python lib https://pypi.python.org/pypi/profanity/1.1
-- Pygame 1.9.3 http://www.pygame.org/download.shtml
+
+Goblin Tower (Pygame)
 - Python 3x https://www.python.org/downloads/
+- Pygame 1.9.3 http://www.pygame.org/download.shtml
 
 Goblin Tower (Text)
-- Profanity Python lib https://pypi.python.org/pypi/profanity/1.1
+- Windows installation of Python 3.6.x https://www.python.org/downloads/windows/
 - Termcolor Python lib https://pypi.python.org/pypi/termcolor
-- Windows installation of Python 3x (as msvcrt is used to detect keyboard input and 'cls' command is used to clear terminal window) https://www.python.org/downloads/windows/
+
+Goblin Tower (Linux)
+- Linux installation of Python 3.5.x https://www.python.org/downloads/source/
+- Termcolor Python lib https://pypi.python.org/pypi/termcolor
